@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "PeopleTableViewController.h"
 
 @implementation AppDelegate
 
@@ -16,10 +17,15 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    // self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    self.window.backgroundColor = [UIColor whiteColor];
-    [self.window makeKeyAndVisible];
+    // self.window.backgroundColor = [UIColor whiteColor];
+    // [self.window makeKeyAndVisible];
+    
+    UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
+    PeopleTableViewController *peopleViewController = (PeopleTableViewController *)[[navigationController viewControllers] objectAtIndex:0];
+    peopleViewController.managedObjectContext = self.managedObjectContext;
+    
     return YES;
 }
 

@@ -22,6 +22,13 @@
 		79A9403C1821F1C7005FC964 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79A940201821F1C7005FC964 /* CoreData.framework */; };
 		79A940441821F1C7005FC964 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 79A940421821F1C7005FC964 /* InfoPlist.strings */; };
 		79A940461821F1C7005FC964 /* DonutRunCDTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79A940451821F1C7005FC964 /* DonutRunCDTests.m */; };
+		79A940541821F2F8005FC964 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 79A940531821F2F8005FC964 /* Person.m */; };
+		79A940571821F318005FC964 /* Donut.m in Sources */ = {isa = PBXBuildFile; fileRef = 79A940561821F318005FC964 /* Donut.m */; };
+		79A9405C1821F44F005FC964 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 79A9405B1821F44F005FC964 /* MainStoryboard.storyboard */; };
+		79A9405F1821F58F005FC964 /* PeopleTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79A9405E1821F58F005FC964 /* PeopleTableViewController.m */; };
+		79A940631821FDA0005FC964 /* FavoritesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79A940621821FDA0005FC964 /* FavoritesTableViewController.m */; };
+		79A9406618220550005FC964 /* FavoritesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 79A9406518220550005FC964 /* FavoritesCell.m */; };
+		79A9406918221002005FC964 /* AddPersonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79A9406818221002005FC964 /* AddPersonViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +60,19 @@
 		79A940411821F1C7005FC964 /* DonutRunCDTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DonutRunCDTests-Info.plist"; sourceTree = "<group>"; };
 		79A940431821F1C7005FC964 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		79A940451821F1C7005FC964 /* DonutRunCDTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DonutRunCDTests.m; sourceTree = "<group>"; };
+		79A940521821F2F8005FC964 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
+		79A940531821F2F8005FC964 /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
+		79A940551821F318005FC964 /* Donut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Donut.h; sourceTree = "<group>"; };
+		79A940561821F318005FC964 /* Donut.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Donut.m; sourceTree = "<group>"; };
+		79A9405B1821F44F005FC964 /* MainStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainStoryboard.storyboard; sourceTree = "<group>"; };
+		79A9405D1821F58F005FC964 /* PeopleTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeopleTableViewController.h; sourceTree = "<group>"; };
+		79A9405E1821F58F005FC964 /* PeopleTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeopleTableViewController.m; sourceTree = "<group>"; };
+		79A940611821FDA0005FC964 /* FavoritesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoritesTableViewController.h; sourceTree = "<group>"; };
+		79A940621821FDA0005FC964 /* FavoritesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoritesTableViewController.m; sourceTree = "<group>"; };
+		79A9406418220550005FC964 /* FavoritesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoritesCell.h; sourceTree = "<group>"; };
+		79A9406518220550005FC964 /* FavoritesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoritesCell.m; sourceTree = "<group>"; };
+		79A9406718221002005FC964 /* AddPersonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddPersonViewController.h; sourceTree = "<group>"; };
+		79A9406818221002005FC964 /* AddPersonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddPersonViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,10 +135,10 @@
 		79A940221821F1C7005FC964 /* DonutRunCD */ = {
 			isa = PBXGroup;
 			children = (
-				79A9402B1821F1C7005FC964 /* AppDelegate.h */,
-				79A9402C1821F1C7005FC964 /* AppDelegate.m */,
-				79A940311821F1C7005FC964 /* Images.xcassets */,
-				79A9402E1821F1C7005FC964 /* DonutRunCD.xcdatamodeld */,
+				79A940601821F596005FC964 /* View Controllers */,
+				79A9405A1821F42C005FC964 /* Application Delegate */,
+				79A940591821F422005FC964 /* Model Classes */,
+				79A940581821F400005FC964 /* Resources */,
 				79A940231821F1C7005FC964 /* Supporting Files */,
 			);
 			path = DonutRunCD;
@@ -151,6 +171,51 @@
 				79A940421821F1C7005FC964 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		79A940581821F400005FC964 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				79A9405B1821F44F005FC964 /* MainStoryboard.storyboard */,
+				79A940311821F1C7005FC964 /* Images.xcassets */,
+				79A9402E1821F1C7005FC964 /* DonutRunCD.xcdatamodeld */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		79A940591821F422005FC964 /* Model Classes */ = {
+			isa = PBXGroup;
+			children = (
+				79A940551821F318005FC964 /* Donut.h */,
+				79A940561821F318005FC964 /* Donut.m */,
+				79A940521821F2F8005FC964 /* Person.h */,
+				79A940531821F2F8005FC964 /* Person.m */,
+			);
+			name = "Model Classes";
+			sourceTree = "<group>";
+		};
+		79A9405A1821F42C005FC964 /* Application Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				79A9402B1821F1C7005FC964 /* AppDelegate.h */,
+				79A9402C1821F1C7005FC964 /* AppDelegate.m */,
+			);
+			name = "Application Delegate";
+			sourceTree = "<group>";
+		};
+		79A940601821F596005FC964 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				79A9405D1821F58F005FC964 /* PeopleTableViewController.h */,
+				79A9405E1821F58F005FC964 /* PeopleTableViewController.m */,
+				79A940611821FDA0005FC964 /* FavoritesTableViewController.h */,
+				79A940621821FDA0005FC964 /* FavoritesTableViewController.m */,
+				79A9406418220550005FC964 /* FavoritesCell.h */,
+				79A9406518220550005FC964 /* FavoritesCell.m */,
+				79A9406718221002005FC964 /* AddPersonViewController.h */,
+				79A9406818221002005FC964 /* AddPersonViewController.m */,
+			);
+			name = "View Controllers";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -228,6 +293,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79A9405C1821F44F005FC964 /* MainStoryboard.storyboard in Resources */,
 				79A940271821F1C7005FC964 /* InfoPlist.strings in Resources */,
 				79A940321821F1C7005FC964 /* Images.xcassets in Resources */,
 			);
@@ -248,9 +314,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79A9405F1821F58F005FC964 /* PeopleTableViewController.m in Sources */,
+				79A940571821F318005FC964 /* Donut.m in Sources */,
 				79A9402D1821F1C7005FC964 /* AppDelegate.m in Sources */,
+				79A940541821F2F8005FC964 /* Person.m in Sources */,
+				79A940631821FDA0005FC964 /* FavoritesTableViewController.m in Sources */,
+				79A9406618220550005FC964 /* FavoritesCell.m in Sources */,
 				79A940301821F1C7005FC964 /* DonutRunCD.xcdatamodeld in Sources */,
 				79A940291821F1C7005FC964 /* main.m in Sources */,
+				79A9406918221002005FC964 /* AddPersonViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
