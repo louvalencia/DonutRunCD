@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "PeopleTableViewController.h"
 
 @class Person;
 
@@ -18,6 +17,7 @@
 @property (nonatomic, weak) id <AddPersonViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) Person *person;
+@property (nonatomic, weak) IBOutlet UITextField *nameField;
 
 @end
 

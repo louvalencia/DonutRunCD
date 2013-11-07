@@ -9,8 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "AddPersonViewController.h"
 
-@interface PeopleTableViewController : UITableViewController
-    <NSFetchedResultsControllerDelegate, AddPersonViewControllerDelegate>
+@interface PeopleTableViewController : UITableViewController <NSFetchedResultsControllerDelegate, AddPersonViewControllerDelegate>
 
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 

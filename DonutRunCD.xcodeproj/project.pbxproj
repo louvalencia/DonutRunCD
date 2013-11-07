@@ -523,6 +523,7 @@
 				79A9404B1821F1C7005FC964 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		79A9404C1821F1C7005FC964 /* Build configuration list for PBXNativeTarget "DonutRunCDTests" */ = {
 			isa = XCConfigurationList;
@@ -531,6 +532,7 @@
 				79A9404E1821F1C7005FC964 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

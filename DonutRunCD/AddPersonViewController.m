@@ -7,6 +7,7 @@
 //
 
 #import "AddPersonViewController.h"
+#import "Person.h"
 
 @interface AddPersonViewController ()
 
@@ -26,6 +27,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self.nameField becomeFirstResponder];
+    [self.nameField addTarget:self action:@selector(save:)
+             forControlEvents:UIControlEventEditingDidEndOnExit];
 	// Do any additional setup after loading the view.
 }
 
@@ -43,6 +47,7 @@
 
 - (IBAction)save:(id)sender
 {
+    self.person.name = self.nameField.text;
     [self.delegate addPersonViewController:self didFinishWithSave:YES];
 }
 

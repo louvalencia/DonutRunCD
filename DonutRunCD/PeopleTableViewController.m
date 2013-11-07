@@ -61,6 +61,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     // [super viewWillAppear:animated];
+    NSError *error;
+    [self.fetchedResultsController performFetch:&error];
     [self.tableView reloadData];
 }
 
@@ -100,7 +102,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"PeopleCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     // Configure the cell...
@@ -278,12 +280,12 @@
         NSManagedObjectContext *addingContext = [[NSManagedObjectContext alloc]
                                                  initWithConcurrencyType:NSMainQueueConcurrencyType];
         [addingContext setParentContext:[self.fetchedResultsController managedObjectContext]];
+        addViewController.managedObjectContext = addingContext;
         
         Person *newPerson = (Person *)[NSEntityDescription
                                        insertNewObjectForEntityForName:@"Person"
                                        inManagedObjectContext:addingContext];
         addViewController.person = newPerson;
-        addViewController.managedObjectContext = addingContext;
     }
     
     if ([[segue identifier] isEqualToString:@"ShowFavorites"]) {
@@ -294,6 +296,12 @@
         // Pass the selected person to the new view controller.
         FavoritesTableViewController *favoritesViewController = (FavoritesTableViewController *)[segue destinationViewController];
         favoritesViewController.person = selectedPerson;
+        
+        // Create a new managed object context for the favorites; set its parent to the fetched results controller's context.
+        NSManagedObjectContext *addingContext = [[NSManagedObjectContext alloc]
+                                                 initWithConcurrencyType:NSMainQueueConcurrencyType];
+        [addingContext setParentContext:[self.fetchedResultsController managedObjectContext]];
+        favoritesViewController.managedObjectContext = addingContext;
     }
 }
 
@@ -331,6 +339,9 @@
             abort();
         }
     }
+    
+    NSError *error;
+    [self.fetchedResultsController performFetch:&error];
     
     // Dismiss the modal view to return to the main list
     [self dismissViewControllerAnimated:YES completion:nil];
