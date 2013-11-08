@@ -111,7 +111,7 @@
     // Configure the cell to show the donut's flavor
     Donut *donut = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.flavorLabel.text = donut.flavor;
-    cell.qtyLabel.text = [NSString stringWithFormat:@"%@",donut.qty];
+    cell.qtyLabel.text = donut.qty.description; // [NSString stringWithFormat:@"%@",donut.qty];
     // [cell.stepper addTarget:self action:@selector(stepperDidChange:) forControlEvents:UIControlEventAllEditingEvents];
 }
 
@@ -134,6 +134,20 @@
     donut.qty = [NSNumber numberWithInt:sender.value];
     NSError *error;
     [self.managedObjectContext save:&error];
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
+{
+    Donut *donut = [self.fetchedResultsController objectAtIndexPath:sourceIndexPath];
+    donut.rank = [NSNumber numberWithInt:destinationIndexPath.row];
+    for (int i = destinationIndexPath.row; i < sourceIndexPath.row; i++) {
+        NSIndexPath *thisPath = [NSIndexPath indexPathForRow:i inSection:0];
+        Donut *donut = [self.fetchedResultsController objectAtIndexPath:thisPath];
+        donut.rank = [NSNumber numberWithInt:thisPath.row + 1];
+    }
+    
+    NSError *error;
+    [self.fetchedResultsController performFetch:&error];
 }
 
 #pragma mark - Table view editing
@@ -217,6 +231,8 @@
         return _fetchedResultsController;
     }
     
+    NSArray *matches;
+    
     // Create and configure a fetch request with the Donut entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Donut" inManagedObjectContext:self.managedObjectContext];
@@ -226,11 +242,14 @@
     NSSortDescriptor *rankDescriptor = [[NSSortDescriptor alloc] initWithKey:@"rank" ascending:YES];
     NSArray *sortDescriptors = @[rankDescriptor];
     [fetchRequest setSortDescriptors:sortDescriptors];
-    /*
+    
     // Set Predicate
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"owner = %@", self.person];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"owner.name == %@", self.person.name];
     [fetchRequest setPredicate:predicate];
-    */
+    
+    NSError *error;
+    matches = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
     // Create and initialize the fetch results controller.
     _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil]; // cacheName:@"Favorite"];
     _fetchedResultsController.delegate = self;
@@ -317,7 +336,7 @@
         Donut *newDonut = (Donut *)[NSEntityDescription
                                        insertNewObjectForEntityForName:@"Donut"
                                        inManagedObjectContext:self.managedObjectContext];
-        NSUInteger nextRow = [[self.fetchedResultsController sections][0] numberOfObjects] + 1;
+        NSUInteger nextRow = [[self.fetchedResultsController sections][0] numberOfObjects];
         addViewController.rank = [NSNumber numberWithInteger:nextRow];
         addViewController.donut = newDonut;
         addViewController.person = self.person;

@@ -8,10 +8,10 @@
     </entity>
     <entity name="Person" representedClassName="Person" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="favorites" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Donut" inverseName="owner" inverseEntity="Donut" syncable="YES"/>
+        <relationship name="favorites" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Donut" inverseName="owner" inverseEntity="Donut" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Person" positionX="160" positionY="192" width="128" height="73"/>
         <element name="Donut" positionX="367" positionY="198" width="128" height="103"/>
+        <element name="Person" positionX="160" positionY="192" width="128" height="73"/>
     </elements>
 </model>
