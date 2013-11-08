@@ -7,7 +7,6 @@
 //
 
 #import "FavoritesTableViewController.h"
-#import "FavoritesCell.h"
 #import "Person.h"
 #import "Donut.h"
 
@@ -113,7 +112,7 @@
     Donut *donut = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.flavorLabel.text = donut.flavor;
     cell.qtyLabel.text = [NSString stringWithFormat:@"%@",donut.qty];
-    
+    // [cell.stepper addTarget:self action:@selector(stepperDidChange:) forControlEvents:UIControlEventAllEditingEvents];
 }
 
 - (FavoritesCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -125,6 +124,16 @@
     // Configure the cell...
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
+}
+
+- (IBAction)stepperDidChangeValue:(UIStepper *)sender
+{
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:
+                              (UITableViewCell *)[[sender superview] superview]];
+    Donut *donut = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    donut.qty = [NSNumber numberWithInt:sender.value];
+    NSError *error;
+    [self.managedObjectContext save:&error];
 }
 
 #pragma mark - Table view editing
@@ -217,9 +226,13 @@
     NSSortDescriptor *rankDescriptor = [[NSSortDescriptor alloc] initWithKey:@"rank" ascending:YES];
     NSArray *sortDescriptors = @[rankDescriptor];
     [fetchRequest setSortDescriptors:sortDescriptors];
-    
+    /*
+    // Set Predicate
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"owner = %@", self.person];
+    [fetchRequest setPredicate:predicate];
+    */
     // Create and initialize the fetch results controller.
-    _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Favorite"];
+    _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil]; // cacheName:@"Favorite"];
     _fetchedResultsController.delegate = self;
     
     return _fetchedResultsController;

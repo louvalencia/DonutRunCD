@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "AddFavoriteViewController.h"
+#import "FavoritesCell.h"
 
 @class Person;
 @class Donut;
