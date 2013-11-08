@@ -297,11 +297,14 @@
         FavoritesTableViewController *favoritesViewController = (FavoritesTableViewController *)[segue destinationViewController];
         favoritesViewController.person = selectedPerson;
         
+        /*
         // Create a new managed object context for the favorites; set its parent to the fetched results controller's context.
         NSManagedObjectContext *addingContext = [[NSManagedObjectContext alloc]
                                                  initWithConcurrencyType:NSMainQueueConcurrencyType];
         [addingContext setParentContext:[self.fetchedResultsController managedObjectContext]];
         favoritesViewController.managedObjectContext = addingContext;
+        */
+        favoritesViewController.managedObjectContext = self.managedObjectContext;
     }
 }
 

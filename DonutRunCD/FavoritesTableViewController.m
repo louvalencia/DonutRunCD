@@ -40,8 +40,11 @@
     [super viewWillAppear:animated];
     
     // Redisplay the data.
-    [self updateInterface];
-    [self updateRightBarButtonItemState];
+    NSError *error;
+    [self.fetchedResultsController performFetch:&error];
+    [self.tableView reloadData];
+    // [self updateInterface];
+    // [self updateRightBarButtonItemState];
 }
 
 - (void)viewDidLoad
@@ -106,7 +109,7 @@
 // Customize the appearance of table view cells.
 - (void)configureCell:(FavoritesCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    // Configure the cell to show the book's title
+    // Configure the cell to show the donut's flavor
     Donut *donut = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.flavorLabel.text = donut.flavor;
     cell.qtyLabel.text = [NSString stringWithFormat:@"%@",donut.qty];
@@ -279,16 +282,76 @@
     [self.tableView endUpdates];
 }
 
-/*
-#pragma mark - Navigation
+#pragma mark - Segue management
 
-// In a story board-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    if ([[segue identifier] isEqualToString:@"AddFavorite"]) {
+        
+        /*
+         The destination view controller for this segue is an AddViewController to manage addition of the person.
+         This block creates a new managed object context as a child of the root view controller's context. It then creates a new person using the child context. This means that changes made to the person remain discrete from the application's managed object context until the person's context is saved.
+         The root view controller sets itself as the delegate of the add controller so that it can be informed when the user has completed the add operation -- either saving or canceling (see addViewController:didFinishWithSave:).
+         IMPORTANT: It's not necessary to use a second context for this. You could just use the existing context, which would simplify some of the code -- you wouldn't need to perform two saves, for example. This implementation, though, illustrates a pattern that may sometimes be useful (where you want to maintain a separate set of edits).
+         */
+        
+        UINavigationController *navController = (UINavigationController *)[segue destinationViewController];
+        AddFavoriteViewController *addViewController = (AddFavoriteViewController *)[navController topViewController];
+        addViewController.delegate = self;
+        
+        // Create a new managed object context for the new donut; set its parent to the fetched results controller's context.
+        addViewController.managedObjectContext = self.managedObjectContext;
+        Donut *newDonut = (Donut *)[NSEntityDescription
+                                       insertNewObjectForEntityForName:@"Donut"
+                                       inManagedObjectContext:self.managedObjectContext];
+        NSUInteger nextRow = [[self.fetchedResultsController sections][0] numberOfObjects] + 1;
+        addViewController.rank = [NSNumber numberWithInteger:nextRow];
+        addViewController.donut = newDonut;
+        addViewController.person = self.person;
+    }
 }
 
+#pragma mark - Add controller delegate
+
+/*
+ Add controller's delegate method; informs the delegate that the add operation has completed, and indicates whether the user saved the new person.
  */
+- (void)addFavoriteViewController:(AddFavoriteViewController *)controller didFinishWithSave:(BOOL)save {
+    
+    if (save) {
+        /*
+         The new person is associated with the add controller's managed object context.
+         This means that any edits that are made don't affect the application's main managed object context -- it's a way of keeping disjoint edits in a separate scratchpad. Saving changes to that context, though, only push changes to the fetched results controller's context. To save the changes to the persistent store, you have to save the fetch results controller's context as well.
+        */
+        NSError *error;
+        NSManagedObjectContext *addingManagedObjectContext = [controller managedObjectContext];
+        if (![addingManagedObjectContext save:&error]) {
+            /*
+             Replace this implementation with code to handle the error appropriately.
+             
+             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+             */
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+        
+        if (![[self.fetchedResultsController managedObjectContext] save:&error]) {
+            /*
+             Replace this implementation with code to handle the error appropriately.
+             
+             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+             */
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+    } else {
+        [self.managedObjectContext deleteObject:
+            [self.fetchedResultsController objectAtIndexPath:
+                [NSIndexPath indexPathForRow:0 inSection:0]]];
+    }
+    
+    // Dismiss the modal view to return to the main list
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 @end

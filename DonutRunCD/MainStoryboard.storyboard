@@ -68,7 +68,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="SyH-1u-mht">
-                                <rect key="frame" x="20" y="118" width="280" height="30"/>
+                                <rect key="frame" x="20" y="120" width="280" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" returnKeyType="done"/>
@@ -93,7 +93,7 @@
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="nameField" destination="SyH-1u-mht" id="bpu-1K-slj"/>
+                        <outlet property="nameField" destination="SyH-1u-mht" id="kPM-eY-vzS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XaX-Bj-g4a" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -115,10 +115,10 @@
             </objects>
             <point key="canvasLocation" x="701" y="410"/>
         </scene>
-        <!--View Controller-->
+        <!--Add Favorite View Controller - Add Donut-->
         <scene sceneID="lTW-1X-gIe">
             <objects>
-                <viewController id="tDg-Yx-GmL" sceneMemberID="viewController">
+                <viewController id="tDg-Yx-GmL" customClass="AddFavoriteViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="gpu-rK-nbk"/>
                         <viewControllerLayoutGuide type="bottom" id="6IN-I6-ZZX"/>
@@ -126,9 +126,31 @@
                     <view key="view" contentMode="scaleToFill" id="Qub-5A-R79">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Flavor" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="PWp-rw-eNZ">
+                                <rect key="frame" x="20" y="120" width="280" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="done"/>
+                            </textField>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="qTb-QI-hgl"/>
+                    <navigationItem key="navigationItem" title="Add Donut" id="qTb-QI-hgl">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="uAX-lU-wnc">
+                            <connections>
+                                <action selector="cancel:" destination="tDg-Yx-GmL" id="Ifa-Hl-JLF"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="iH9-ZZ-Lgo">
+                            <connections>
+                                <action selector="save:" destination="tDg-Yx-GmL" id="F7f-Qn-ixL"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="flavorField" destination="PWp-rw-eNZ" id="wav-pg-ZYT"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IsJ-CN-sA7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -151,7 +173,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Flavor" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H7M-mt-dNp">
-                                            <rect key="frame" x="20" y="11" width="47" height="21"/>
+                                            <rect key="frame" x="20" y="11" width="143" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -182,6 +204,13 @@
                             <outlet property="delegate" destination="K5t-Vl-O11" id="8aZ-z0-s6K"/>
                         </connections>
                     </tableView>
+                    <toolbarItems>
+                        <barButtonItem systemItem="add" id="MpP-aP-eBA">
+                            <connections>
+                                <segue destination="wSn-hE-DLM" kind="modal" identifier="AddFavorite" id="2Ii-eZ-cy4"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" id="zTK-rK-luM"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="A83-6a-ozc" userLabel="First Responder" sceneMemberID="firstResponder"/>

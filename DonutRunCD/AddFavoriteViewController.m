@@ -1,21 +1,21 @@
 //
-//  AddPersonViewController.m
+//  AddFavoriteViewController.m
 //  DonutRunCD
 //
-//  Created by Lou Valencia on 10/31/13.
+//  Created by Lou Valencia on 11/7/13.
 //  Copyright (c) 2013 Lou Valencia. All rights reserved.
 //
 
-#import "AddPersonViewController.h"
-#import "Person.h"
+#import "AddFavoriteViewController.h"
+#import "Donut.h"
 
-@interface AddPersonViewController ()
+@interface AddFavoriteViewController ()
 
-@property (nonatomic, weak) IBOutlet UITextField *nameField;
+@property (nonatomic, weak) IBOutlet UITextField *flavorField;
 
 @end
 
-@implementation AddPersonViewController
+@implementation AddFavoriteViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -29,8 +29,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.nameField becomeFirstResponder];
-    [self.nameField addTarget:self action:@selector(save:)
+    [self.flavorField becomeFirstResponder];
+    [self.flavorField addTarget:self action:@selector(save:)
              forControlEvents:UIControlEventEditingDidEndOnExit];
 	// Do any additional setup after loading the view.
 }
@@ -43,14 +43,17 @@
 
 - (IBAction)cancel:(id)sender
 {
-    [self.delegate addPersonViewController:self didFinishWithSave:NO];
+    [self.delegate addFavoriteViewController:self didFinishWithSave:NO];
 }
 
 
 - (IBAction)save:(id)sender
 {
-    self.person.name = self.nameField.text;
-    [self.delegate addPersonViewController:self didFinishWithSave:YES];
+    self.donut.flavor = self.flavorField.text;
+    self.donut.qty = [NSNumber numberWithInt:1];
+    self.donut.rank = self.rank;
+    self.donut.owner = self.person;
+    [self.delegate addFavoriteViewController:self didFinishWithSave:YES];
 }
 
 @end

@@ -7,12 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AddFavoriteViewController.h"
 
 @class Person;
 @class Donut;
 
 @interface FavoritesTableViewController : UITableViewController
-    <NSFetchedResultsControllerDelegate>
+    <NSFetchedResultsControllerDelegate, AddFavoriteViewControllerDelegate>
 
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) Person *person;
