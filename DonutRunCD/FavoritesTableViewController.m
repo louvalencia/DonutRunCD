@@ -376,10 +376,10 @@
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
-    } else {
+    /* } else {
         [self.managedObjectContext deleteObject:
             [self.fetchedResultsController objectAtIndexPath:
-                [NSIndexPath indexPathForRow:0 inSection:0]]];
+                [NSIndexPath indexPathForRow:0 inSection:0]]]; */
     }
     
     // Dismiss the modal view to return to the main list
