@@ -4,14 +4,21 @@
         <attribute name="flavor" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="qty" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="rank" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="inOrder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="donutItem" inverseEntity="Order" syncable="YES"/>
         <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="favorites" inverseEntity="Person" syncable="YES"/>
+    </entity>
+    <entity name="Order" representedClassName="Order" syncable="YES">
+        <attribute name="qty" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="rank" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="donutItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Donut" inverseName="inOrder" inverseEntity="Donut" syncable="YES"/>
     </entity>
     <entity name="Person" representedClassName="Person" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="favorites" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Donut" inverseName="owner" inverseEntity="Donut" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Donut" positionX="367" positionY="198" width="128" height="103"/>
+        <element name="Donut" positionX="367" positionY="198" width="128" height="118"/>
         <element name="Person" positionX="160" positionY="192" width="128" height="73"/>
+        <element name="Order" positionX="583" positionY="207" width="128" height="88"/>
     </elements>
 </model>

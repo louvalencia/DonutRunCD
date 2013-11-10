@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "PeopleTableViewController.h"
+#import "OrderTableViewController.h"
 
 @implementation AppDelegate
 
@@ -23,8 +23,8 @@
     // [self.window makeKeyAndVisible];
     
     UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
-    PeopleTableViewController *peopleViewController = (PeopleTableViewController *)[[navigationController viewControllers] objectAtIndex:0];
-    peopleViewController.managedObjectContext = self.managedObjectContext;
+    OrderTableViewController *orderViewController = (OrderTableViewController *)[[navigationController viewControllers] objectAtIndex:0];
+    orderViewController.managedObjectContext = self.managedObjectContext;
     
     return YES;
 }

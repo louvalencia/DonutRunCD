@@ -1,29 +1,22 @@
 //
-//  FavoritesTableViewController.m
+//  OrderTableViewController.m
 //  DonutRunCD
 //
-//  Created by Lou Valencia on 10/30/13.
+//  Created by Lou Valencia on 11/10/13.
 //  Copyright (c) 2013 Lou Valencia. All rights reserved.
 //
 
-#import "FavoritesTableViewController.h"
-#import "Person.h"
+#import "OrderTableViewController.h"
 #import "Donut.h"
+#import "Order.h"
 
-@interface FavoritesTableViewController ()
+@interface OrderTableViewController ()
 
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 
-- (void)updateInterface;
-- (void)updateRightBarButtonItemState;
-
 @end
 
-#pragma mark -
-
-@implementation FavoritesTableViewController
-
-#pragma mark - View Lifecycle
+@implementation OrderTableViewController
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -34,60 +27,27 @@
     return self;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    
-    [super viewWillAppear:animated];
-    
-    // Redisplay the data.
-    NSError *error;
-    [self.fetchedResultsController performFetch:&error];
-    [self.tableView reloadData];
-    // [self updateInterface];
-    // [self updateRightBarButtonItemState];
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
-    if ([self class] == [FavoritesTableViewController class]) {
+    if ([self class] == [OrderTableViewController class]) {
         self.navigationItem.rightBarButtonItem = self.editButtonItem;
     }
     
     self.tableView.allowsSelectionDuringEditing = YES;
     
-    // if the locale changes behind our back, we need to be notified so we can update the date
-    // format in the table view cells
-    //
-    /* [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(localeChanged:)
-                                                 name:NSCurrentLocaleDidChangeNotification
-                                               object:nil]; */
-}
-
-- (void)updateInterface {
-    
-    // UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"FavCell"];
-    // self.flavorLabel.text = self.donut.flavor;
-}
-
-- (void)updateRightBarButtonItemState {
-    
-    // Conditionally enable the right bar button item -- it should only be enabled if the person is in a valid state for saving.
-    self.navigationItem.rightBarButtonItem.enabled = [self.person validateForUpdate:NULL];
+    // Uncomment the following line to preserve selection between presentations.
+    // self.clearsSelectionOnViewWillAppear = NO;
+ 
+    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (void)dealloc
-{
-    /* [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:NSCurrentLocaleDidChangeNotification
-                                                  object:nil]; */
 }
 
 #pragma mark - Table view data source
@@ -105,11 +65,10 @@
     return [sectionInfo numberOfObjects];
 }
 
-- (FavoritesCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"FavCell";
-    FavoritesCell *cell = (FavoritesCell *)[tableView
-        dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    static NSString *CellIdentifier = @"OrderCell";
+    OrderCell *cell = (OrderCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     // Configure the cell...
     [self configureCell:cell atIndexPath:indexPath];
@@ -117,23 +76,13 @@
 }
 
 // Customize the appearance of table view cells.
-- (void)configureCell:(FavoritesCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)configureCell:(OrderCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     // Configure the cell to show the donut's flavor
-    Donut *donut = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.flavorLabel.text = donut.flavor;
-    cell.qtyLabel.text = donut.qty.description;
-    // [cell.stepper addTarget:self action:@selector(stepperDidChange:) forControlEvents:UIControlEventAllEditingEvents];
-}
-
-- (IBAction)stepperDidChangeValue:(UIStepper *)sender
-{
-    NSIndexPath *indexPath = [self.tableView indexPathForCell:
-                              (UITableViewCell *)[[sender superview] superview]];
-    Donut *donut = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    donut.qty = [NSNumber numberWithInt:sender.value];
-    NSError *error;
-    [self.managedObjectContext save:&error];
+    Order *order = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    Donut *donut = order.donutItem;
+    cell.qtyLabel.text = order.qty.description;
+    cell.donutLabel.text = donut.flavor;
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
@@ -142,13 +91,13 @@
     int minPathRow = sourceIndexPath.row < destinationIndexPath.row ? sourceIndexPath.row : destinationIndexPath.row;
     for (int i = minPathRow; i <= maxPathRow; i++) {
         NSIndexPath *thisPath = [NSIndexPath indexPathForRow:i inSection:0];
-        Donut *donut = [self.fetchedResultsController objectAtIndexPath:thisPath];
+        Order *order = [self.fetchedResultsController objectAtIndexPath:thisPath];
         if (thisPath.row == sourceIndexPath.row) {
-            donut.rank = [NSNumber numberWithInt:destinationIndexPath.row];
+            order.rank = [NSNumber numberWithInt:destinationIndexPath.row];
         } else if (sourceIndexPath.row > destinationIndexPath.row) {
-            donut.rank = [NSNumber numberWithInt:thisPath.row + 1];
+            order.rank = [NSNumber numberWithInt:thisPath.row + 1];
         } else {
-            donut.rank = [NSNumber numberWithInt:thisPath.row - 1];
+            order.rank = [NSNumber numberWithInt:thisPath.row - 1];
         }
     }
     
@@ -168,8 +117,7 @@
     if (!editing) {
         // Save the changes.
         NSError *error;
-#warning Do I need "person" here?
-        if (![self.person.managedObjectContext save:&error]) {
+        if (![self.managedObjectContext save:&error]) {
             /*
              Replace this implementation with code to handle the error appropriately.
              
@@ -197,8 +145,8 @@
         // Rerank remaining rows
         for (int i = indexPath.row + 1; i < [[self.fetchedResultsController sections][0] numberOfObjects]; i++) {
             NSIndexPath *thisPath = [NSIndexPath indexPathForRow:i inSection:0];
-            Donut *donut = [self.fetchedResultsController objectAtIndexPath:thisPath];
-            donut.rank = [NSNumber numberWithInt:thisPath.row - 1];
+            Order *order = [self.fetchedResultsController objectAtIndexPath:thisPath];
+            order.rank = [NSNumber numberWithInt:thisPath.row - 1];
         }
         
         // Delete the managed object.
@@ -215,7 +163,7 @@
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
-    }   
+    }
 }
 
 /*
@@ -225,17 +173,8 @@
 }
 */
 
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
 #pragma mark - Fetched results controller
-    
+
 /*
  Returns the fetched results controller. Creates and configures the controller if necessary.
  */
@@ -247,17 +186,13 @@
     
     // Create and configure a fetch request with the Donut entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Donut" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Order" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
     // Create the sort descriptors array.
     NSSortDescriptor *rankDescriptor = [[NSSortDescriptor alloc] initWithKey:@"rank" ascending:YES];
     NSArray *sortDescriptors = @[rankDescriptor];
     [fetchRequest setSortDescriptors:sortDescriptors];
-    
-    // Set Predicate
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"owner.name == %@", self.person.name];
-    [fetchRequest setPredicate:predicate];
     
     // Create and initialize the fetch results controller.
     _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil]; // cacheName:@"Favorite"];
@@ -292,7 +227,7 @@
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:(FavoritesCell *)[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            [self configureCell:(OrderCell *)[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
             break;
             
         case NSFetchedResultsChangeMove:
@@ -323,74 +258,32 @@
     [self.tableView endUpdates];
 }
 
-#pragma mark - Segue management
+/*
+// Override to support conditional rearranging of the table view.
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Return NO if you do not want the item to be re-orderable.
+    return YES;
+}
+*/
 
+#pragma mark - Navigation
+
+// In a story board-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([[segue identifier] isEqualToString:@"AddFavorite"]) {
-        
-        /*
-         The destination view controller for this segue is an AddViewController to manage addition of the person.
-         This block creates a new managed object context as a child of the root view controller's context. It then creates a new person using the child context. This means that changes made to the person remain discrete from the application's managed object context until the person's context is saved.
-         The root view controller sets itself as the delegate of the add controller so that it can be informed when the user has completed the add operation -- either saving or canceling (see addViewController:didFinishWithSave:).
-         IMPORTANT: It's not necessary to use a second context for this. You could just use the existing context, which would simplify some of the code -- you wouldn't need to perform two saves, for example. This implementation, though, illustrates a pattern that may sometimes be useful (where you want to maintain a separate set of edits).
-         */
-        
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+    if ([[segue identifier] isEqualToString:@"ShowPeople"]) {
         UINavigationController *navController = (UINavigationController *)[segue destinationViewController];
-        AddFavoriteViewController *addViewController = (AddFavoriteViewController *)[navController topViewController];
-        addViewController.delegate = self;
-        
-        // Create a new managed object context for the new donut; set its parent to the fetched results controller's context.
-        addViewController.managedObjectContext = self.managedObjectContext;
-        Donut *newDonut = (Donut *)[NSEntityDescription
-                                       insertNewObjectForEntityForName:@"Donut"
-                                       inManagedObjectContext:self.managedObjectContext];
-        NSUInteger nextRow = [[self.fetchedResultsController sections][0] numberOfObjects];
-        addViewController.rank = [NSNumber numberWithInteger:nextRow];
-        addViewController.donut = newDonut;
-        addViewController.person = self.person;
+        PeopleTableViewController *peopleViewController = (PeopleTableViewController *)[navController topViewController];
+        peopleViewController.delegate = self;
+        peopleViewController.managedObjectContext = self.managedObjectContext;
     }
 }
 
-#pragma mark - Add controller delegate
-
-/*
- Add controller's delegate method; informs the delegate that the add operation has completed, and indicates whether the user saved the new person.
- */
-- (void)addFavoriteViewController:(AddFavoriteViewController *)controller didFinishWithSave:(BOOL)save {
-    
-    if (save) {
-        /*
-         The new person is associated with the add controller's managed object context.
-         This means that any edits that are made don't affect the application's main managed object context -- it's a way of keeping disjoint edits in a separate scratchpad. Saving changes to that context, though, only push changes to the fetched results controller's context. To save the changes to the persistent store, you have to save the fetch results controller's context as well.
-        */
-        NSError *error;
-        NSManagedObjectContext *addingManagedObjectContext = [controller managedObjectContext];
-        if (![addingManagedObjectContext save:&error]) {
-            /*
-             Replace this implementation with code to handle the error appropriately.
-             
-             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-             */
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-        
-        if (![[self.fetchedResultsController managedObjectContext] save:&error]) {
-            /*
-             Replace this implementation with code to handle the error appropriately.
-             
-             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-             */
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-    /* } else {
-        [self.managedObjectContext deleteObject:
-            [self.fetchedResultsController objectAtIndexPath:
-                [NSIndexPath indexPathForRow:0 inSection:0]]]; */
-    }
-    
+- (void)didFinishWithPeopleTableViewController:(PeopleTableViewController *)peopleTableViewController
+{
     // Dismiss the modal view to return to the main list
     [self dismissViewControllerAnimated:YES completion:nil];
 }

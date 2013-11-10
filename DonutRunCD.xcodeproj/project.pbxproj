@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		7951823B182C81CC00B37CE1 /* AddFavoriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7951823A182C81CC00B37CE1 /* AddFavoriteViewController.m */; };
+		79518241182FD32D00B37CE1 /* OrderTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79518240182FD32D00B37CE1 /* OrderTableViewController.m */; };
+		79518244182FD61200B37CE1 /* OrderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 79518243182FD61200B37CE1 /* OrderCell.m */; };
+		79518247182FDAE100B37CE1 /* Order.m in Sources */ = {isa = PBXBuildFile; fileRef = 79518246182FDAE100B37CE1 /* Order.m */; };
 		79A9401B1821F1C7005FC964 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79A9401A1821F1C7005FC964 /* Foundation.framework */; };
 		79A9401D1821F1C7005FC964 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79A9401C1821F1C7005FC964 /* CoreGraphics.framework */; };
 		79A9401F1821F1C7005FC964 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79A9401E1821F1C7005FC964 /* UIKit.framework */; };
@@ -45,6 +48,12 @@
 /* Begin PBXFileReference section */
 		79518239182C81CC00B37CE1 /* AddFavoriteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddFavoriteViewController.h; sourceTree = "<group>"; };
 		7951823A182C81CC00B37CE1 /* AddFavoriteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddFavoriteViewController.m; sourceTree = "<group>"; };
+		7951823F182FD32D00B37CE1 /* OrderTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderTableViewController.h; sourceTree = "<group>"; };
+		79518240182FD32D00B37CE1 /* OrderTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderTableViewController.m; sourceTree = "<group>"; };
+		79518242182FD61200B37CE1 /* OrderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderCell.h; sourceTree = "<group>"; };
+		79518243182FD61200B37CE1 /* OrderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderCell.m; sourceTree = "<group>"; };
+		79518245182FDAE100B37CE1 /* Order.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Order.h; sourceTree = "<group>"; };
+		79518246182FDAE100B37CE1 /* Order.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Order.m; sourceTree = "<group>"; };
 		79A940171821F1C7005FC964 /* DonutRunCD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DonutRunCD.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79A9401A1821F1C7005FC964 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		79A9401C1821F1C7005FC964 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -193,6 +202,8 @@
 				79A940561821F318005FC964 /* Donut.m */,
 				79A940521821F2F8005FC964 /* Person.h */,
 				79A940531821F2F8005FC964 /* Person.m */,
+				79518245182FDAE100B37CE1 /* Order.h */,
+				79518246182FDAE100B37CE1 /* Order.m */,
 			);
 			name = "Model Classes";
 			sourceTree = "<group>";
@@ -209,6 +220,10 @@
 		79A940601821F596005FC964 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				7951823F182FD32D00B37CE1 /* OrderTableViewController.h */,
+				79518240182FD32D00B37CE1 /* OrderTableViewController.m */,
+				79518242182FD61200B37CE1 /* OrderCell.h */,
+				79518243182FD61200B37CE1 /* OrderCell.m */,
 				79A9405D1821F58F005FC964 /* PeopleTableViewController.h */,
 				79A9405E1821F58F005FC964 /* PeopleTableViewController.m */,
 				79A940611821FDA0005FC964 /* FavoritesTableViewController.h */,
@@ -325,7 +340,10 @@
 				79A940541821F2F8005FC964 /* Person.m in Sources */,
 				79A940631821FDA0005FC964 /* FavoritesTableViewController.m in Sources */,
 				79A9406618220550005FC964 /* FavoritesCell.m in Sources */,
+				79518244182FD61200B37CE1 /* OrderCell.m in Sources */,
 				7951823B182C81CC00B37CE1 /* AddFavoriteViewController.m in Sources */,
+				79518247182FDAE100B37CE1 /* Order.m in Sources */,
+				79518241182FD32D00B37CE1 /* OrderTableViewController.m in Sources */,
 				79A940301821F1C7005FC964 /* DonutRunCD.xcdatamodeld in Sources */,
 				79A940291821F1C7005FC964 /* main.m in Sources */,
 				79A9406918221002005FC964 /* AddPersonViewController.m in Sources */,

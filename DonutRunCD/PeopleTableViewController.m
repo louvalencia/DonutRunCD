@@ -15,6 +15,8 @@
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) UIBarButtonItem *rightBarButtonItem;
 
+- (IBAction)done:(UIBarButtonItem *)sender;
+
 @end
 
 #pragma mark -
@@ -348,6 +350,11 @@
     
     // Dismiss the modal view to return to the main list
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)done:(UIBarButtonItem *)sender
+{
+    [self.delegate didFinishWithPeopleTableViewController:self];
 }
 
 @end
