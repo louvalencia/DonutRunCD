@@ -111,7 +111,7 @@
     // Configure the cell to show the donut's flavor
     Donut *donut = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.flavorLabel.text = donut.flavor;
-    cell.qtyLabel.text = donut.qty.description; // [NSString stringWithFormat:@"%@",donut.qty];
+    cell.qtyLabel.text = donut.rank .description; // [NSString stringWithFormat:@"%@",donut.qty];
     // [cell.stepper addTarget:self action:@selector(stepperDidChange:) forControlEvents:UIControlEventAllEditingEvents];
 }
 
@@ -138,12 +138,20 @@
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
 {
-    Donut *donut = [self.fetchedResultsController objectAtIndexPath:sourceIndexPath];
-    donut.rank = [NSNumber numberWithInt:destinationIndexPath.row];
-    for (int i = destinationIndexPath.row; i < sourceIndexPath.row; i++) {
+    // Donut *donut = [self.fetchedResultsController objectAtIndexPath:sourceIndexPath];
+    // donut.rank = [NSNumber numberWithInt:destinationIndexPath.row];
+    int maxPathRow = sourceIndexPath.row > destinationIndexPath.row ? sourceIndexPath.row : destinationIndexPath.row;
+    int minPathRow = sourceIndexPath.row < destinationIndexPath.row ? sourceIndexPath.row : destinationIndexPath.row;
+    for (int i = minPathRow; i <= maxPathRow; i++) {
         NSIndexPath *thisPath = [NSIndexPath indexPathForRow:i inSection:0];
         Donut *donut = [self.fetchedResultsController objectAtIndexPath:thisPath];
-        donut.rank = [NSNumber numberWithInt:thisPath.row + 1];
+        if (thisPath.row == sourceIndexPath.row) {
+            donut.rank = [NSNumber numberWithInt:destinationIndexPath.row];
+        } else if (sourceIndexPath.row > destinationIndexPath.row) {
+            donut.rank = [NSNumber numberWithInt:thisPath.row + 1];
+        } else {
+            donut.rank = [NSNumber numberWithInt:thisPath.row - 1];
+        }
     }
     
     NSError *error;
@@ -186,6 +194,13 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        // Rerank remaining rows
+        for (int i = indexPath.row + 1; i < [[self.fetchedResultsController sections][0] numberOfObjects]; i++) {
+            NSIndexPath *thisPath = [NSIndexPath indexPathForRow:i inSection:0];
+            Donut *donut = [self.fetchedResultsController objectAtIndexPath:thisPath];
+            donut.rank = [NSNumber numberWithInt:thisPath.row - 1];
+        }
         
         // Delete the managed object.
         NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
@@ -231,8 +246,6 @@
         return _fetchedResultsController;
     }
     
-    NSArray *matches;
-    
     // Create and configure a fetch request with the Donut entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Donut" inManagedObjectContext:self.managedObjectContext];
@@ -246,9 +259,6 @@
     // Set Predicate
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"owner.name == %@", self.person.name];
     [fetchRequest setPredicate:predicate];
-    
-    NSError *error;
-    matches = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
     
     // Create and initialize the fetch results controller.
     _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil]; // cacheName:@"Favorite"];
