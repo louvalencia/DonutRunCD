@@ -1,22 +1,27 @@
 //
-//  OrderTableViewController.m
+//  EditOrderTableViewController.m
 //  DonutRunCD
 //
 //  Created by Lou Valencia on 11/10/13.
 //  Copyright (c) 2013 Lou Valencia. All rights reserved.
 //
 
-#import "OrderTableViewController.h"
-#import "Donut.h"
-#import "Order.h"
+#import "EditOrderTableViewController.h"
+#import "EditOrderHeader.h"
+#import "OrderBuilder.h"
+#import "Person.h"
 
-@interface OrderTableViewController ()
+@interface EditOrderTableViewController ()
 
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 
 @end
 
-@implementation OrderTableViewController
+#pragma mark -
+
+@implementation EditOrderTableViewController
+
+#pragma mark - View lifecycle
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -30,18 +35,32 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    // EditOrderHeader *header = [[[NSBundle mainBundle] loadNibNamed:@"EditOrderHeader" owner:self options:nil] lastObject];
+    // self.tableView.tableHeaderView = header;
 
-    if ([self class] == [OrderTableViewController class]) {
-        self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    if ([self class] == [EditOrderTableViewController class]) {
+        self.navigationItem.LeftBarButtonItem = self.editButtonItem;
     }
     
     self.tableView.allowsSelectionDuringEditing = YES;
+    
+    // NSError *error;
+    // [self.fetchedResultsController performFetch:&error];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    NSError *error;
+    [self.fetchedResultsController performFetch:&error];
 }
 
 - (void)didReceiveMemoryWarning
@@ -67,45 +86,35 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"OrderCell";
-    OrderCell *cell = (OrderCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    static NSString *CellIdentifier = @"FavCell";
+    OrderBuilderCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     // Configure the cell...
-    [self configureCell:cell atIndexPath:indexPath];
+    
     return cell;
 }
 
 // Customize the appearance of table view cells.
-- (void)configureCell:(OrderCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)configureCell:(OrderBuilderCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     // Configure the cell to show the donut's flavor
-    Order *order = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    Donut *donut = order.donutItem;
-    cell.qtyLabel.text = order.qty.description;
-    cell.donutLabel.text = donut.flavor;
+    OrderBuilder *orderBuilder = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.personLabel.text = orderBuilder.person.name;
+    cell.qtyLabel.text = orderBuilder.qty.description;
+    // [cell.stepper addTarget:self action:@selector(stepperDidChange:) forControlEvents:UIControlEventAllEditingEvents];
 }
 
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
+- (IBAction)stepperDidChangeValue:(UIStepper *)sender
 {
-    int maxPathRow = sourceIndexPath.row > destinationIndexPath.row ? sourceIndexPath.row : destinationIndexPath.row;
-    int minPathRow = sourceIndexPath.row < destinationIndexPath.row ? sourceIndexPath.row : destinationIndexPath.row;
-    for (int i = minPathRow; i <= maxPathRow; i++) {
-        NSIndexPath *thisPath = [NSIndexPath indexPathForRow:i inSection:0];
-        Order *order = [self.fetchedResultsController objectAtIndexPath:thisPath];
-        if (thisPath.row == sourceIndexPath.row) {
-            order.rank = [NSNumber numberWithInt:destinationIndexPath.row];
-        } else if (sourceIndexPath.row > destinationIndexPath.row) {
-            order.rank = [NSNumber numberWithInt:thisPath.row + 1];
-        } else {
-            order.rank = [NSNumber numberWithInt:thisPath.row - 1];
-        }
-    }
-    
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:
+                              (UITableViewCell *)[[sender superview] superview]];
+    OrderBuilder *orderBuilder = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    orderBuilder.qty = [NSNumber numberWithInt:sender.value];
     NSError *error;
-    [self.fetchedResultsController performFetch:&error];
+    [self.managedObjectContext save:&error];
 }
 
-#pragma mark - Table view editing
+#pragma mark - Tableview editing
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated {
     
@@ -138,38 +147,31 @@
 }
 */
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        
-        // Rerank remaining rows
-        for (int i = indexPath.row + 1; i < [[self.fetchedResultsController sections][0] numberOfObjects]; i++) {
-            NSIndexPath *thisPath = [NSIndexPath indexPathForRow:i inSection:0];
-            Order *order = [self.fetchedResultsController objectAtIndexPath:thisPath];
-            order.rank = [NSNumber numberWithInt:thisPath.row - 1];
-        }
-        
-        // Delete the managed object.
-        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
-        
-        NSError *error;
-        if (![context save:&error]) {
-            /*
-             Replace this implementation with code to handle the error appropriately.
-             
-             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-             */
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-    }
+        // Delete the row from the data source
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    }   
+    else if (editingStyle == UITableViewCellEditingStyleInsert) {
+        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+    }   
 }
 
 /*
 // Override to support rearranging the table view.
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
+}
+*/
+
+/*
+// Override to support conditional rearranging of the table view.
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Return NO if you do not want the item to be re-orderable.
+    return YES;
 }
 */
 
@@ -186,16 +188,16 @@
     
     // Create and configure a fetch request with the Donut entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Order" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"OrderBuilder" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
     // Create the sort descriptors array.
-    NSSortDescriptor *rankDescriptor = [[NSSortDescriptor alloc] initWithKey:@"rank" ascending:YES];
-    NSArray *sortDescriptors = @[rankDescriptor];
+    NSSortDescriptor *nameDescriptor = [[NSSortDescriptor alloc] initWithKey:@"person.name" ascending:YES];
+    NSArray *sortDescriptors = @[nameDescriptor];
     [fetchRequest setSortDescriptors:sortDescriptors];
     
     // Create and initialize the fetch results controller.
-    _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Order"];
+    _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"OrderBuilder"];
     _fetchedResultsController.delegate = self;
     
     return _fetchedResultsController;
@@ -227,7 +229,7 @@
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:(OrderCell *)[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            [self configureCell:(OrderBuilderCell *)[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
             break;
             
         case NSFetchedResultsChangeMove:
@@ -258,44 +260,65 @@
     [self.tableView endUpdates];
 }
 
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
 #pragma mark - Navigation
+
+- (IBAction)done:(UIBarButtonItem *)sender
+{
+    [self.delegate didFinishWithEditOrderTableViewController:self];
+}
 
 // In a story board-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-    if ([[segue identifier] isEqualToString:@"ShowPeople"]) {
-        UINavigationController *navController = [segue destinationViewController];
-        PeopleTableViewController *peopleViewController = (PeopleTableViewController *)[navController topViewController];
-        peopleViewController.delegate = self;
-        peopleViewController.managedObjectContext = self.managedObjectContext;
-    } else if ([[segue identifier] isEqualToString:@"EditOrder"]) {
-        UINavigationController *navController = [segue destinationViewController];
-        EditOrderTableViewController *editViewController = (EditOrderTableViewController *)[navController topViewController];
-        editViewController.delegate = self;
-        editViewController.managedObjectContext = self.managedObjectContext;
+    if ([[segue identifier] isEqualToString:@"AddPeopleToOrder"]) {
+        UINavigationController *navController = (UINavigationController *)[segue destinationViewController];
+        AddPeopleToOrderTableViewController *addViewController = (AddPeopleToOrderTableViewController *)[navController topViewController];
+        addViewController.delegate = self;
+        addViewController.managedObjectContext = self.managedObjectContext;
     }
 }
 
-- (void)didFinishWithPeopleTableViewController:(PeopleTableViewController *)controller
-{
-    // Dismiss the modal view to return to the main list
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
+#pragma mark - Add view controller delegate
 
-- (void)didFinishWithEditOrderTableViewController:(EditOrderTableViewController *)controller
+- (void)didFinishWithAddPeopleToOrderTableViewController:(AddPeopleToOrderTableViewController *)controller withArray:(NSArray *)array
 {
-    // Dismiss the modal view to return to the main list
+    for (NSString *name in array) {
+        // Create and configure a fetch request with the Person entity.
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Person" inManagedObjectContext:self.managedObjectContext];
+        [fetchRequest setEntity:entity];
+        
+        // Create the sort descriptors array.
+        NSSortDescriptor *nameDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES];
+        NSArray *sortDescriptors = @[nameDescriptor];
+        [fetchRequest setSortDescriptors:sortDescriptors];
+        
+        // Set Predicate
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@", name];
+        [fetchRequest setPredicate:predicate];
+        
+        NSError *error;
+        NSArray *matches = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        if ([matches count] == 1) {
+            OrderBuilder *newOrderBuilder = [NSEntityDescription insertNewObjectForEntityForName:@"OrderBuilder" inManagedObjectContext:self.managedObjectContext];
+            newOrderBuilder.person = [matches lastObject];
+        } else {
+            // error
+        }
+    }
+    
+    NSError *error;
+    if (![self.managedObjectContext save:&error]) {
+        /*
+         Replace this implementation with code to handle the error appropriately.
+         
+         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+         */
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    [self.fetchedResultsController performFetch:&error];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

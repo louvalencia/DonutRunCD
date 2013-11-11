@@ -23,7 +23,7 @@
 
 @implementation FavoritesTableViewController
 
-#pragma mark - View Lifecycle
+#pragma mark - View lifecycle
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -168,8 +168,7 @@
     if (!editing) {
         // Save the changes.
         NSError *error;
-#warning Do I need "person" here?
-        if (![self.person.managedObjectContext save:&error]) {
+        if (![self.managedObjectContext save:&error]) {
             /*
              Replace this implementation with code to handle the error appropriately.
              

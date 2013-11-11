@@ -1,5 +1,5 @@
 //
-//  Order.h
+//  OrderBuilder.h
 //  DonutRunCD
 //
 //  Created by Lou Valencia on 11/11/13.
@@ -9,12 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Donut;
+@class Person;
 
-@interface Order : NSManagedObject
+@interface OrderBuilder : NSManagedObject
 
-@property (nonatomic, retain) NSNumber * rank;
 @property (nonatomic, retain) NSNumber * qty;
-@property (nonatomic, retain) Donut *donutItem;
+@property (nonatomic, retain) Person *person;
 
 @end

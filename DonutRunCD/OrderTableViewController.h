@@ -9,10 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "OrderCell.h"
 #import "PeopleTableViewController.h"
+#import "EditOrderTableViewController.h"
 
 @class Donut;
 
-@interface OrderTableViewController : UITableViewController <NSFetchedResultsControllerDelegate, PeopleTableViewControllerDelegate>
+@interface OrderTableViewController : UITableViewController <NSFetchedResultsControllerDelegate, PeopleTableViewControllerDelegate, EditOrderTableViewControllerDelegate>
 
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) Donut *donut;
