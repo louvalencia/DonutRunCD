@@ -50,6 +50,8 @@
 - (IBAction)save:(id)sender
 {
     self.person.name = self.nameField.text;
+    self.person.inOrder = [NSNumber numberWithBool:NO];
+    self.person.qtyInOrder = [NSNumber numberWithInt:1];
     [self.delegate addPersonViewController:self didFinishWithSave:YES];
 }
 

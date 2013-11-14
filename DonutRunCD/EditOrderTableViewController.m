@@ -8,7 +8,6 @@
 
 #import "EditOrderTableViewController.h"
 #import "EditOrderHeader.h"
-#import "OrderBuilder.h"
 #import "Person.h"
 
 @interface EditOrderTableViewController ()
@@ -36,8 +35,8 @@
 {
     [super viewDidLoad];
     
-    // EditOrderHeader *header = [[[NSBundle mainBundle] loadNibNamed:@"EditOrderHeader" owner:self options:nil] lastObject];
-    // self.tableView.tableHeaderView = header;
+    EditOrderHeader *header = [[[NSBundle mainBundle] loadNibNamed:@"EditOrderHeader" owner:self options:nil] lastObject];
+    self.tableView.tableHeaderView = header;
 
     if ([self class] == [EditOrderTableViewController class]) {
         self.navigationItem.LeftBarButtonItem = self.editButtonItem;
@@ -45,8 +44,8 @@
     
     self.tableView.allowsSelectionDuringEditing = YES;
     
-    // NSError *error;
-    // [self.fetchedResultsController performFetch:&error];
+    NSError *error;
+    [self.fetchedResultsController performFetch:&error];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -57,10 +56,12 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
+    // [super viewWillAppear:animated];
     
     NSError *error;
     [self.fetchedResultsController performFetch:&error];
+    [self.tableView reloadData];
+    NSLog(@"viewWillAppear");
 }
 
 - (void)didReceiveMemoryWarning
@@ -69,12 +70,18 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)viewDidDisappear:(BOOL)animated
+{
+    // self.fetchedResultsController = nil;
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
     return [[self.fetchedResultsController sections] count];
+    // return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -86,9 +93,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"FavCell";
+    static NSString *CellIdentifier = @"OrderBuilderCell";
     OrderBuilderCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
+    [self configureCell:cell atIndexPath:indexPath];
     // Configure the cell...
     
     return cell;
@@ -98,9 +105,9 @@
 - (void)configureCell:(OrderBuilderCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     // Configure the cell to show the donut's flavor
-    OrderBuilder *orderBuilder = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.personLabel.text = orderBuilder.person.name;
-    cell.qtyLabel.text = orderBuilder.qty.description;
+    Person *person = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.personLabel.text = person.name;
+    cell.qtyLabel.text = person.qtyInOrder.description;
     // [cell.stepper addTarget:self action:@selector(stepperDidChange:) forControlEvents:UIControlEventAllEditingEvents];
 }
 
@@ -108,8 +115,8 @@
 {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:
                               (UITableViewCell *)[[sender superview] superview]];
-    OrderBuilder *orderBuilder = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    orderBuilder.qty = [NSNumber numberWithInt:sender.value];
+    Person *person = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    person.qtyInOrder = [NSNumber numberWithInt:sender.value];
     NSError *error;
     [self.managedObjectContext save:&error];
 }
@@ -151,12 +158,22 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
+        // Delete the managed object.
+        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
         // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+        // [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        NSError *error;
+        if (![context save:&error]) {
+            /*
+             Replace this implementation with code to handle the error appropriately.
+             
+             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+             */
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+    }
 }
 
 /*
@@ -188,17 +205,26 @@
     
     // Create and configure a fetch request with the Donut entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"OrderBuilder" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Person" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
     // Create the sort descriptors array.
-    NSSortDescriptor *nameDescriptor = [[NSSortDescriptor alloc] initWithKey:@"person.name" ascending:YES];
+    NSSortDescriptor *nameDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES];
     NSArray *sortDescriptors = @[nameDescriptor];
     [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    // Set Predicate
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"inOrder != 0"];
+    [fetchRequest setPredicate:predicate];
     
     // Create and initialize the fetch results controller.
     _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"OrderBuilder"];
     _fetchedResultsController.delegate = self;
+    
+    NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    for (Person *person in results) {
+        NSLog(@"%@: inOrder: %@, qtyInOrder: %@", person.name, person.inOrder.stringValue == 0 ? @"NO" : @"YES", person.qtyInOrder.stringValue);
+    }
     
     return _fetchedResultsController;
 }
@@ -282,6 +308,7 @@
 
 - (void)didFinishWithAddPeopleToOrderTableViewController:(AddPeopleToOrderTableViewController *)controller withArray:(NSArray *)array
 {
+    /*
     for (NSString *name in array) {
         // Create and configure a fetch request with the Person entity.
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -306,6 +333,7 @@
             // error
         }
     }
+    */
     
     NSError *error;
     if (![self.managedObjectContext save:&error]) {

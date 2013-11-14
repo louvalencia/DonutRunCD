@@ -32,6 +32,12 @@
     return self;
 }
 
+- (void)awakeFromNib
+{
+    [self.qtyTextField addTarget:self action:@selector(doneTapped:)
+             forControlEvents:UIControlEventEditingDidEndOnExit];
+}
+
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
@@ -40,6 +46,12 @@
     // Drawing code
 }
 */
+
+- (void)doneTapped:(id) sender
+{
+    // [self.qtyTextField resignFirstResponder];
+    [self.qtyTextField endEditing:YES];
+}
 
 - (IBAction)dozenStepped:(UIStepper *)sender
 {

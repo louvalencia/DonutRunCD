@@ -14,7 +14,6 @@
 		7951824D1830221200B37CE1 /* EditOrderTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7951824C1830221200B37CE1 /* EditOrderTableViewController.m */; };
 		7951824F1830225600B37CE1 /* EditOrderHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7951824E1830225600B37CE1 /* EditOrderHeader.xib */; };
 		7951825218302C9800B37CE1 /* EditOrderHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 7951825118302C9800B37CE1 /* EditOrderHeader.m */; };
-		79518255183094FB00B37CE1 /* OrderBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 79518254183094FB00B37CE1 /* OrderBuilder.m */; };
 		79518258183097B200B37CE1 /* OrderBuilderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 79518257183097B200B37CE1 /* OrderBuilderCell.m */; };
 		7951825B1830A0D700B37CE1 /* AddPeopleToOrderTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7951825A1830A0D700B37CE1 /* AddPeopleToOrderTableViewController.m */; };
 		79A9401B1821F1C7005FC964 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79A9401A1821F1C7005FC964 /* Foundation.framework */; };
@@ -65,8 +64,6 @@
 		7951824E1830225600B37CE1 /* EditOrderHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditOrderHeader.xib; sourceTree = "<group>"; };
 		7951825018302C9800B37CE1 /* EditOrderHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditOrderHeader.h; sourceTree = "<group>"; };
 		7951825118302C9800B37CE1 /* EditOrderHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditOrderHeader.m; sourceTree = "<group>"; };
-		79518253183094FB00B37CE1 /* OrderBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderBuilder.h; sourceTree = "<group>"; };
-		79518254183094FB00B37CE1 /* OrderBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderBuilder.m; sourceTree = "<group>"; };
 		79518256183097B200B37CE1 /* OrderBuilderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderBuilderCell.h; sourceTree = "<group>"; };
 		79518257183097B200B37CE1 /* OrderBuilderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderBuilderCell.m; sourceTree = "<group>"; };
 		795182591830A0D700B37CE1 /* AddPeopleToOrderTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddPeopleToOrderTableViewController.h; sourceTree = "<group>"; };
@@ -258,8 +255,6 @@
 				79A940531821F2F8005FC964 /* Person.m */,
 				79518245182FDAE100B37CE1 /* Order.h */,
 				79518246182FDAE100B37CE1 /* Order.m */,
-				79518253183094FB00B37CE1 /* OrderBuilder.h */,
-				79518254183094FB00B37CE1 /* OrderBuilder.m */,
 			);
 			name = "Model Classes";
 			sourceTree = "<group>";
@@ -393,7 +388,6 @@
 				79518241182FD32D00B37CE1 /* OrderTableViewController.m in Sources */,
 				7951825B1830A0D700B37CE1 /* AddPeopleToOrderTableViewController.m in Sources */,
 				79A940301821F1C7005FC964 /* DonutRunCD.xcdatamodeld in Sources */,
-				79518255183094FB00B37CE1 /* OrderBuilder.m in Sources */,
 				79A940291821F1C7005FC964 /* main.m in Sources */,
 				7951825218302C9800B37CE1 /* EditOrderHeader.m in Sources */,
 				79A9406918221002005FC964 /* AddPersonViewController.m in Sources */,

@@ -91,23 +91,21 @@
         total += [donut.qty intValue];
     }
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%d donuts", total];
+    cell.accessoryType = [person.inOrder boolValue] == YES ?
+        UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    NSString *nameChange = cell.textLabel.text;
+    Person *person = [self.fetchedResultsController objectAtIndexPath:indexPath];
     if (cell.accessoryType == UITableViewCellAccessoryNone) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
-        if (!self.array) {
-            self.array = [[NSMutableArray alloc] initWithObjects:nameChange, nil];
-        } else {
-            [self.array addObject:nameChange];
-        }
+        person.inOrder = [NSNumber numberWithBool:YES];
     } else if (cell.accessoryType == UITableViewCellAccessoryCheckmark) {
         cell.accessoryType = UITableViewCellAccessoryNone;
-        [self.array delete:nameChange];
+        person.inOrder = [NSNumber numberWithBool:NO];
     }
 }
 

@@ -74,7 +74,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="OrderBuilderCell" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="FavCell" id="fG0-po-Iqw" customClass="OrderBuilderCell">
+                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="OrderBuilderCell" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="OrderBuilderCell" id="fG0-po-Iqw" customClass="OrderBuilderCell">
                                 <rect key="frame" x="0.0" y="86" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fG0-po-Iqw" id="JRw-HE-rVl">
@@ -106,7 +106,6 @@
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="accessoryView" destination="TRV-V9-Dwx" id="qs1-z0-UiE"/>
-                                    <outlet property="flavorLabel" destination="hff-xe-UF0" id="Z6s-RQ-vR3"/>
                                     <outlet property="personLabel" destination="hff-xe-UF0" id="eoI-ZF-oZB"/>
                                     <outlet property="qtyLabel" destination="Apd-yW-vAN" id="PYe-He-ola"/>
                                     <outlet property="stepper" destination="TRV-V9-Dwx" id="GyL-8D-Yle"/>

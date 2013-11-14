@@ -298,6 +298,7 @@
         // Pass the selected person to the new view controller.
         FavoritesTableViewController *favoritesViewController = (FavoritesTableViewController *)[segue destinationViewController];
         favoritesViewController.person = selectedPerson;
+        favoritesViewController.title = selectedPerson.name;
         
         /*
         // Create a new managed object context for the favorites; set its parent to the fetched results controller's context.

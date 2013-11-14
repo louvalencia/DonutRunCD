@@ -16,7 +16,7 @@
 
 @property (nonatomic, weak) id <AddPeopleToOrderTableViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, strong) NSMutableArray *array;
+@property (nonatomic, strong) NSMutableArray *array; // of NSString of Person.name
 
 @end
 
