@@ -61,7 +61,6 @@
     NSError *error;
     [self.fetchedResultsController performFetch:&error];
     [self.tableView reloadData];
-    NSLog(@"viewWillAppear");
 }
 
 - (void)didReceiveMemoryWarning
@@ -220,11 +219,6 @@
     // Create and initialize the fetch results controller.
     _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"OrderBuilder"];
     _fetchedResultsController.delegate = self;
-    
-    NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
-    for (Person *person in results) {
-        NSLog(@"%@: inOrder: %@, qtyInOrder: %@", person.name, person.inOrder.stringValue == 0 ? @"NO" : @"YES", person.qtyInOrder.stringValue);
-    }
     
     return _fetchedResultsController;
 }
