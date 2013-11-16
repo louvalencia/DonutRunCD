@@ -11,6 +11,7 @@
 @interface OrderBuilderCell : UITableViewCell
 
 @property (nonatomic, weak) IBOutlet UILabel *personLabel;
+@property (nonatomic, weak) IBOutlet UILabel *donutsLabel;
 @property (nonatomic, weak) IBOutlet UILabel *qtyLabel;
 @property (nonatomic, weak) IBOutlet UIStepper *stepper;
 

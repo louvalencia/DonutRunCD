@@ -8,6 +8,21 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol EditOrderHeaderDelegate;
+
 @interface EditOrderHeader : UIView
 
+@property (weak, nonatomic) id <EditOrderHeaderDelegate> delegate;
+@property (weak, nonatomic) IBOutlet UITextField *qtyTextField;
+@property (weak, nonatomic) IBOutlet UIStepper *dozenStepper;
+@property (weak, nonatomic) IBOutlet UIStepper *donutStepper;
+
+- (IBAction)dozenStepped:(UIStepper *)sender;
+- (IBAction)donutStepped:(UIStepper *)sender;
+- (IBAction)distribute:(UIButton *)sender;
+
+@end
+
+@protocol EditOrderHeaderDelegate
+- (void)distributeButtonTapped;
 @end

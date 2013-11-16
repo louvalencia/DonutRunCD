@@ -7,8 +7,8 @@
 //
 
 #import "EditOrderTableViewController.h"
-#import "EditOrderHeader.h"
 #import "Person.h"
+#import "Donut.h"
 
 @interface EditOrderTableViewController ()
 
@@ -36,6 +36,7 @@
     [super viewDidLoad];
     
     EditOrderHeader *header = [[[NSBundle mainBundle] loadNibNamed:@"EditOrderHeader" owner:self options:nil] lastObject];
+    header.delegate = self;
     self.tableView.tableHeaderView = header;
 
     if ([self class] == [EditOrderTableViewController class]) {
@@ -54,24 +55,10 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    // [super viewWillAppear:animated];
-    
-    NSError *error;
-    [self.fetchedResultsController performFetch:&error];
-    [self.tableView reloadData];
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    // self.fetchedResultsController = nil;
 }
 
 #pragma mark - Table view data source
@@ -106,8 +93,12 @@
     // Configure the cell to show the donut's flavor
     Person *person = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.personLabel.text = person.name;
+    int total = 0;
+    for (Donut *donut in person.favorites) {
+        total += [donut.qty intValue];
+    }
+    cell.donutsLabel.text = [NSString stringWithFormat:@"%d donuts", total];
     cell.qtyLabel.text = person.qtyInOrder.description;
-    // [cell.stepper addTarget:self action:@selector(stepperDidChange:) forControlEvents:UIControlEventAllEditingEvents];
 }
 
 - (IBAction)stepperDidChangeValue:(UIStepper *)sender
@@ -115,7 +106,10 @@
     NSIndexPath *indexPath = [self.tableView indexPathForCell:
                               (UITableViewCell *)[[sender superview] superview]];
     Person *person = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    person.qtyInOrder = [NSNumber numberWithInt:sender.value];
+    int qty = [person.qtyInOrder intValue];
+    qty += sender.value;
+    person.qtyInOrder = [NSNumber numberWithInt:qty];
+    sender.value = 0;
     NSError *error;
     [self.managedObjectContext save:&error];
 }
@@ -295,40 +289,35 @@
         AddPeopleToOrderTableViewController *addViewController = (AddPeopleToOrderTableViewController *)[navController topViewController];
         addViewController.delegate = self;
         addViewController.managedObjectContext = self.managedObjectContext;
+    } else if ([[segue identifier] isEqualToString:@"ShowPeople"]) {
+        UINavigationController *navController = [segue destinationViewController];
+        PeopleTableViewController *peopleViewController = (PeopleTableViewController *)[navController topViewController];
+        peopleViewController.delegate = self;
+        peopleViewController.managedObjectContext = self.managedObjectContext;
     }
+}
+
+#pragma mark - Edit header delegate
+
+- (void)distributeButtonTapped
+{
+    NSArray *people = [self.fetchedResultsController fetchedObjects];
+    int personCount = [people count];
+    EditOrderHeader *header = (EditOrderHeader *)self.tableView.tableHeaderView;
+    int orderQty = [header.qtyTextField.text intValue];
+    for (Person *person in people) {
+        int qty = orderQty / personCount + ([people indexOfObject:person] < orderQty % personCount ? 1 : 0);
+        person.qtyInOrder = [NSNumber numberWithInt:qty];
+    }
+    NSError *error;
+    [self.managedObjectContext save:&error];
+    [self.fetchedResultsController performFetch:&error];
 }
 
 #pragma mark - Add view controller delegate
 
-- (void)didFinishWithAddPeopleToOrderTableViewController:(AddPeopleToOrderTableViewController *)controller withArray:(NSArray *)array
+- (void)didFinishWithAddPeopleToOrderTableViewController:(AddPeopleToOrderTableViewController *)controller
 {
-    /*
-    for (NSString *name in array) {
-        // Create and configure a fetch request with the Person entity.
-        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Person" inManagedObjectContext:self.managedObjectContext];
-        [fetchRequest setEntity:entity];
-        
-        // Create the sort descriptors array.
-        NSSortDescriptor *nameDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES];
-        NSArray *sortDescriptors = @[nameDescriptor];
-        [fetchRequest setSortDescriptors:sortDescriptors];
-        
-        // Set Predicate
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@", name];
-        [fetchRequest setPredicate:predicate];
-        
-        NSError *error;
-        NSArray *matches = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-        if ([matches count] == 1) {
-            OrderBuilder *newOrderBuilder = [NSEntityDescription insertNewObjectForEntityForName:@"OrderBuilder" inManagedObjectContext:self.managedObjectContext];
-            newOrderBuilder.person = [matches lastObject];
-        } else {
-            // error
-        }
-    }
-    */
-    
     NSError *error;
     if (![self.managedObjectContext save:&error]) {
         /*
@@ -341,6 +330,14 @@
     }
     
     [self.fetchedResultsController performFetch:&error];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - People view controller delegate
+
+- (void)didFinishWithPeopleTableViewController:(PeopleTableViewController *)controller
+{
+    // Dismiss the modal view to return to the main list
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

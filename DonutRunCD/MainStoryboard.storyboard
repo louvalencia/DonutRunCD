@@ -82,13 +82,13 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Person" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hff-xe-UF0">
-                                            <rect key="frame" x="20" y="11" width="143" height="21"/>
+                                            <rect key="frame" x="20" y="3" width="143" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" wraps="YES" value="1" minimumValue="1" maximumValue="24" translatesAutoresizingMaskIntoConstraints="NO" id="TRV-V9-Dwx">
+                                        <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" autorepeat="NO" minimumValue="-1" maximumValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="TRV-V9-Dwx">
                                             <rect key="frame" x="206" y="7" width="94" height="29"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <connections>
@@ -102,10 +102,18 @@
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y46-ex-7Hg">
+                                            <rect key="frame" x="20" y="24" width="143" height="21"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="accessoryView" destination="TRV-V9-Dwx" id="qs1-z0-UiE"/>
+                                    <outlet property="donutsLabel" destination="y46-ex-7Hg" id="hsG-Zx-tOl"/>
                                     <outlet property="personLabel" destination="hff-xe-UF0" id="eoI-ZF-oZB"/>
                                     <outlet property="qtyLabel" destination="Apd-yW-vAN" id="PYe-He-ola"/>
                                     <outlet property="stepper" destination="TRV-V9-Dwx" id="GyL-8D-Yle"/>
@@ -122,6 +130,12 @@
                         <barButtonItem systemItem="add" id="gjM-el-dK8">
                             <connections>
                                 <segue destination="f57-yo-Yd3" kind="modal" identifier="AddPeopleToOrder" id="cEa-mp-xDy"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="AFJ-YF-wcW"/>
+                        <barButtonItem title="People" id="HIP-nI-8eC">
+                            <connections>
+                                <segue destination="6Tj-PI-qqh" kind="modal" identifier="ShowPeople" id="e6t-Mi-dRC"/>
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
@@ -498,4 +512,7 @@
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="e6t-Mi-dRC"/>
+    </inferredMetricsTieBreakers>
 </document>

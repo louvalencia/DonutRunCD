@@ -10,13 +10,6 @@
 
 @interface EditOrderHeader ()
 
-@property (weak, nonatomic) IBOutlet UITextField *qtyTextField;
-@property (weak, nonatomic) IBOutlet UIStepper *dozenStepper;
-@property (weak, nonatomic) IBOutlet UIStepper *donutStepper;
-
-- (IBAction)dozenStepped:(UIStepper *)sender;
-- (IBAction)donutStepped:(UIStepper *)sender;
-- (IBAction)distribute:(UIButton *)sender;
 
 
 @end
@@ -55,16 +48,22 @@
 
 - (IBAction)dozenStepped:(UIStepper *)sender
 {
-    
+    int qty = [self.qtyTextField.text intValue];
+    qty += sender.value * 12;
+    self.qtyTextField.text = [NSString stringWithFormat:@"%d", qty];
+    sender.value = 0;
 }
 
 - (IBAction)donutStepped:(UIStepper *)sender
 {
-    
+    int qty = [self.qtyTextField.text intValue];
+    qty += sender.value;
+    self.qtyTextField.text = [NSString stringWithFormat:@"%d", qty];
+    sender.value = 0;
 }
 
 - (IBAction)distribute:(UIButton *)sender
 {
-    
+    [self.delegate distributeButtonTapped];
 }
 @end

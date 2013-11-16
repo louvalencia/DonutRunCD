@@ -19,7 +19,6 @@
 #pragma mark -
 
 @implementation AddPeopleToOrderTableViewController
-@synthesize array;
 
 #pragma mark - View lifecycle
 
@@ -170,7 +169,7 @@
     [fetchRequest setSortDescriptors:sortDescriptors];
     
     // Create and initialize the fetch results controller.
-    _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"AddPeopleToOrder"];
+    _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil]; // @"AddPeopleToOrder"];
     _fetchedResultsController.delegate = self;
     
     return _fetchedResultsController;
@@ -246,7 +245,7 @@
 
 - (IBAction)done:(UIBarButtonItem *)sender
 {
-    [self.delegate didFinishWithAddPeopleToOrderTableViewController:self withArray:self.array];
+    [self.delegate didFinishWithAddPeopleToOrderTableViewController:self];
 }
 
 @end

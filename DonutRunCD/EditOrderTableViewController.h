@@ -8,11 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "OrderBuilderCell.h"
+#import "EditOrderHeader.h"
 #import "AddPeopleToOrderTableViewController.h"
+#import "PeopleTableViewController.h"
 
 @protocol EditOrderTableViewControllerDelegate;
 
-@interface EditOrderTableViewController : UITableViewController <NSFetchedResultsControllerDelegate, AddPeopleToOrderTableViewControllerDelegate>
+@interface EditOrderTableViewController : UITableViewController <NSFetchedResultsControllerDelegate, AddPeopleToOrderTableViewControllerDelegate, EditOrderHeaderDelegate, PeopleTableViewControllerDelegate>
 
 @property (nonatomic, strong) id <EditOrderTableViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;

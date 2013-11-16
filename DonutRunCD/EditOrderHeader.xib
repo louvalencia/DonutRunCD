@@ -16,11 +16,11 @@
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits" returnKeyType="done"/>
                 </textField>
-                <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" wraps="YES" minimumValue="-1" maximumValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="tfc-NG-3zg">
+                <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" autorepeat="NO" minimumValue="-1" maximumValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="tfc-NG-3zg">
                     <rect key="frame" x="40" y="58" width="94" height="29"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <connections>
-                        <action selector="dozenStepped:" destination="1" eventType="valueChanged" id="eb5-TQ-Ziq"/>
+                        <action selector="dozenStepped:" destination="1" eventType="valueChanged" id="RGW-Em-Ebc"/>
                     </connections>
                 </stepper>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Dozen" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ajp-sP-O9e">
@@ -30,11 +30,11 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" wraps="YES" minimumValue="-1" maximumValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="dHi-fN-qDD">
+                <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" autorepeat="NO" minimumValue="-1" maximumValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="dHi-fN-qDD">
                     <rect key="frame" x="188" y="58" width="94" height="29"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <connections>
-                        <action selector="donutStepped:" destination="1" eventType="valueChanged" id="ZSF-lN-srn"/>
+                        <action selector="donutStepped:" destination="1" eventType="valueChanged" id="cIA-NR-l1n"/>
                     </connections>
                 </stepper>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Donut" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ltd-r3-dVb">
@@ -51,15 +51,15 @@
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
-                        <action selector="distribute:" destination="1" eventType="touchUpInside" id="rfJ-Ys-Brt"/>
+                        <action selector="distribute:" destination="1" eventType="touchUpInside" id="RhA-X8-YcV"/>
                     </connections>
                 </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <connections>
-                <outlet property="donutStepper" destination="dHi-fN-qDD" id="u5b-NB-O8A"/>
-                <outlet property="dozenStepper" destination="tfc-NG-3zg" id="lGz-1L-ZVf"/>
-                <outlet property="qtyTextField" destination="duR-s9-dal" id="PkD-sY-jUr"/>
+                <outlet property="donutStepper" destination="dHi-fN-qDD" id="mg2-f6-jr6"/>
+                <outlet property="dozenStepper" destination="tfc-NG-3zg" id="rwf-Hq-YpG"/>
+                <outlet property="qtyTextField" destination="duR-s9-dal" id="DJf-io-btk"/>
             </connections>
         </view>
     </objects>
