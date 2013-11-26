@@ -2,7 +2,7 @@
 //  Donut.m
 //  DonutRunCD
 //
-//  Created by Lou Valencia on 11/11/13.
+//  Created by Lou Valencia on 11/25/13.
 //  Copyright (c) 2013 Lou Valencia. All rights reserved.
 //
 
@@ -16,7 +16,7 @@
 @dynamic flavor;
 @dynamic qty;
 @dynamic rank;
-@dynamic owner;
 @dynamic inOrder;
+@dynamic owner;
 
 @end

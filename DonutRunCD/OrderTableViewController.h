@@ -17,5 +17,6 @@
 
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) Donut *donut;
+@property (nonatomic, strong) NSMutableArray *order;
 
 @end

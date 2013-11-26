@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3400" systemVersion="13A603" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3401" systemVersion="13A603" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Donut" representedClassName="Donut" syncable="YES">
         <attribute name="flavor" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="qty" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="rank" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="inOrder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="donutItem" inverseEntity="Order" syncable="YES"/>
+        <relationship name="inOrder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="donutItems" inverseEntity="Order" syncable="YES"/>
         <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="favorites" inverseEntity="Person" syncable="YES"/>
     </entity>
     <entity name="Order" representedClassName="Order" syncable="YES">
         <attribute name="qty" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="rank" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="donutItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Donut" inverseName="inOrder" inverseEntity="Donut" syncable="YES"/>
+        <relationship name="donutItems" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Donut" inverseName="inOrder" inverseEntity="Donut" syncable="YES"/>
     </entity>
     <entity name="Person" representedClassName="Person" syncable="YES">
         <attribute name="inOrder" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -19,8 +19,8 @@
         <relationship name="favorites" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Donut" inverseName="owner" inverseEntity="Donut" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Donut" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Order" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Person" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Donut" positionX="0" positionY="0" width="128" height="120"/>
+        <element name="Order" positionX="261" positionY="-36" width="128" height="88"/>
+        <element name="Person" positionX="-207" positionY="0" width="128" height="105"/>
     </elements>
 </model>

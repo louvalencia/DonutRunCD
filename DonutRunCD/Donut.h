@@ -2,7 +2,7 @@
 //  Donut.h
 //  DonutRunCD
 //
-//  Created by Lou Valencia on 11/11/13.
+//  Created by Lou Valencia on 11/25/13.
 //  Copyright (c) 2013 Lou Valencia. All rights reserved.
 //
 
@@ -16,7 +16,7 @@
 @property (nonatomic, retain) NSString * flavor;
 @property (nonatomic, retain) NSNumber * qty;
 @property (nonatomic, retain) NSNumber * rank;
-@property (nonatomic, retain) Person *owner;
 @property (nonatomic, retain) Order *inOrder;
+@property (nonatomic, retain) Person *owner;
 
 @end

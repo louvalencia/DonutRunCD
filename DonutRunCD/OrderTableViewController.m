@@ -7,6 +7,7 @@
 //
 
 #import "OrderTableViewController.h"
+#import "Person.h"
 #import "Donut.h"
 #import "Order.h"
 
@@ -44,6 +45,12 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self updateOrderArray];
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -51,6 +58,63 @@
 }
 
 #pragma mark - Table view data source
+
+- (void)updateOrderArray
+{
+    // Try again
+    NSFetchRequest *req = [[NSFetchRequest alloc] init];
+    NSEntityDescription *ent = [NSEntityDescription entityForName:@"Order" inManagedObjectContext:self.managedObjectContext];
+    [req setEntity:ent];
+    NSArray *results = [self.managedObjectContext executeFetchRequest:req error:nil];
+    for (Order *result in results) {
+        [self.managedObjectContext deleteObject:result];
+    }
+    [self.managedObjectContext save:nil];
+    
+    // Create and configure a fetch request with the Donut entity.
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Person" inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    
+    // Create the sort descriptors array.
+    NSSortDescriptor *rankDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES];
+    NSArray *sortDescriptors = @[rankDescriptor];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    // Set Predicate
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"inOrder != 0"];
+    [fetchRequest setPredicate:predicate];
+    
+    NSError *error;
+    NSArray *matches = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if ([matches count] == 0) NSLog(@"No matches");
+    for (Person *match in matches) {
+        for (int i = 0; i < [match.qtyInOrder intValue]; i++) {
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"rank = %@", @(i)];
+            NSSet *filteredSet = [match.favorites filteredSetUsingPredicate:predicate];
+            Donut *thisDonut = (Donut *)[filteredSet anyObject];
+            BOOL stored = NO;
+            for (Order *order in [self.fetchedResultsController fetchedObjects]) {
+                if ([((Donut *)[order.donutItems anyObject]).flavor isEqualToString:thisDonut.flavor]) {
+                    [order addDonutItemsObject:thisDonut];
+                    stored = YES;
+                    break;
+                }
+            }
+            if (!stored) {
+                Order *newOrder = (Order *)[NSEntityDescription
+                                            insertNewObjectForEntityForName:@"Order"
+                                            inManagedObjectContext:self.managedObjectContext];
+                NSUInteger nextRow = [[self.fetchedResultsController sections][0] numberOfObjects];
+                newOrder.rank = [NSNumber numberWithInteger:nextRow];
+                [newOrder addDonutItemsObject:thisDonut];
+            }
+            [self.fetchedResultsController performFetch:&error];
+        }
+    }
+    [self.fetchedResultsController performFetch:&error];
+    [self.tableView reloadData];
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -80,8 +144,8 @@
     
     // Configure the cell to show the donut's flavor
     Order *order = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    Donut *donut = order.donutItem;
-    cell.qtyLabel.text = order.qty.description;
+    Donut *donut = [order.donutItems anyObject];
+    cell.qtyLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)order.donutItems.count];
     cell.donutLabel.text = donut.flavor;
 }
 
