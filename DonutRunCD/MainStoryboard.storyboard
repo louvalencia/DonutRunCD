@@ -47,15 +47,10 @@
                         </connections>
                     </tableView>
                     <toolbarItems>
-                        <barButtonItem systemItem="add" id="R2a-pV-qAo">
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="IqZ-Du-ynh"/>
+                        <barButtonItem title="Build Order" id="R2a-pV-qAo">
                             <connections>
                                 <segue destination="uyT-ph-v91" kind="modal" identifier="EditOrder" id="OXu-S3-hwS"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="IqZ-Du-ynh"/>
-                        <barButtonItem title="People" id="gA0-ra-rDS">
-                            <connections>
-                                <segue destination="6Tj-PI-qqh" kind="modal" identifier="ShowPeople" id="AkB-72-JmI"/>
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
@@ -65,7 +60,7 @@
             </objects>
             <point key="canvasLocation" x="239" y="-1225"/>
         </scene>
-        <!--Edit Order Table View Controller-->
+        <!--Edit Order Table View Controller - Build Order-->
         <scene sceneID="hMX-qP-evG">
             <objects>
                 <tableViewController storyboardIdentifier="EditOrderTableViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="yKZ-rT-au5" customClass="EditOrderTableViewController" sceneMemberID="viewController">
@@ -127,19 +122,24 @@
                         </connections>
                     </tableView>
                     <toolbarItems>
-                        <barButtonItem systemItem="add" id="gjM-el-dK8">
-                            <connections>
-                                <segue destination="f57-yo-Yd3" kind="modal" identifier="AddPeopleToOrder" id="cEa-mp-xDy"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="AFJ-YF-wcW"/>
                         <barButtonItem title="People" id="HIP-nI-8eC">
                             <connections>
                                 <segue destination="6Tj-PI-qqh" kind="modal" identifier="ShowPeople" id="e6t-Mi-dRC"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="AFJ-YF-wcW"/>
+                        <barButtonItem title="Select" id="gjM-el-dK8">
+                            <connections>
+                                <segue destination="f57-yo-Yd3" kind="modal" identifier="AddPeopleToOrder" id="cEa-mp-xDy"/>
+                            </connections>
+                        </barButtonItem>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" id="1L7-Qz-dMq">
+                    <navigationItem key="navigationItem" title="Build Order" id="1L7-Qz-dMq">
+                        <barButtonItem key="leftBarButtonItem" title="Clear" id="SMS-Lp-d80">
+                            <connections>
+                                <action selector="clearButtonTapped:" destination="yKZ-rT-au5" id="TLi-5c-snJ"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="done" id="bCZ-4P-XPa">
                             <connections>
                                 <action selector="done:" destination="yKZ-rT-au5" id="yD6-pd-6go"/>
@@ -151,7 +151,7 @@
             </objects>
             <point key="canvasLocation" x="1239" y="-1225"/>
         </scene>
-        <!--Add People To Order Table View Controller-->
+        <!--Add People To Order Table View Controller - Select Participants-->
         <scene sceneID="yIP-fQ-CRx">
             <objects>
                 <tableViewController storyboardIdentifier="AddPeopleToOrderTableViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="jov-A0-5JH" customClass="AddPeopleToOrderTableViewController" sceneMemberID="viewController">
@@ -190,7 +190,7 @@
                             <outlet property="delegate" destination="jov-A0-5JH" id="r4T-hc-PZ2"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="lyC-CH-usg">
+                    <navigationItem key="navigationItem" title="Select Participants" id="lyC-CH-usg">
                         <barButtonItem key="rightBarButtonItem" systemItem="done" id="JWA-t8-pF3">
                             <connections>
                                 <action selector="done:" destination="jov-A0-5JH" id="ggN-ES-0gK"/>
@@ -280,9 +280,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <toolbarItems>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="a3Q-tt-51j"/>
-                    </toolbarItems>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" title="Add Person" id="Ugo-Dh-NZk">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="Lqc-7t-sSd">
                             <connections>
@@ -295,7 +293,6 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="nameField" destination="SyH-1u-mht" id="kPM-eY-vzS"/>
                     </connections>
@@ -383,7 +380,7 @@
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" wraps="YES" value="1" minimumValue="1" maximumValue="24" translatesAutoresizingMaskIntoConstraints="NO" id="uY1-Cq-TIh">
+                                        <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" wraps="YES" minimumValue="-1" maximumValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="uY1-Cq-TIh">
                                             <rect key="frame" x="206" y="7" width="94" height="29"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <connections>
@@ -512,7 +509,4 @@
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
-    <inferredMetricsTieBreakers>
-        <segue reference="e6t-Mi-dRC"/>
-    </inferredMetricsTieBreakers>
 </document>

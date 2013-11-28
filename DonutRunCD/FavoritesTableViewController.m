@@ -124,7 +124,10 @@
     NSIndexPath *indexPath = [self.tableView indexPathForCell:
                               (UITableViewCell *)[[sender superview] superview]];
     Donut *donut = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    donut.qty = [NSNumber numberWithInt:sender.value];
+    int qty = [donut.qty intValue];
+    qty += sender.value;
+    donut.qty = [NSNumber numberWithInt:qty];
+    sender.value = 0;
     NSError *error;
     [self.managedObjectContext save:&error];
 }

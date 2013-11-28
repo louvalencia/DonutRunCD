@@ -32,11 +32,13 @@
 {
     [super viewDidLoad];
 
-    if ([self class] == [OrderTableViewController class]) {
+    /*
+     if ([self class] == [OrderTableViewController class]) {
         self.navigationItem.rightBarButtonItem = self.editButtonItem;
     }
     
     self.tableView.allowsSelectionDuringEditing = YES;
+    */
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -48,7 +50,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self updateOrderArray];
+    // [self clearOrder];
+    [self updateOrderModel];
 }
 
 - (void)didReceiveMemoryWarning
@@ -59,9 +62,8 @@
 
 #pragma mark - Table view data source
 
-- (void)updateOrderArray
+- (void)clearOrder
 {
-    // Try again
     NSFetchRequest *req = [[NSFetchRequest alloc] init];
     NSEntityDescription *ent = [NSEntityDescription entityForName:@"Order" inManagedObjectContext:self.managedObjectContext];
     [req setEntity:ent];
@@ -70,8 +72,24 @@
         [self.managedObjectContext deleteObject:result];
     }
     [self.managedObjectContext save:nil];
+}
+
+- (void)updateOrderModel
+{
+    // Clear out all Order data and start fresh.
+    [self clearOrder];
+    /*
+    NSFetchRequest *req = [[NSFetchRequest alloc] init];
+    NSEntityDescription *ent = [NSEntityDescription entityForName:@"Order" inManagedObjectContext:self.managedObjectContext];
+    [req setEntity:ent];
+    NSArray *results = [self.managedObjectContext executeFetchRequest:req error:nil];
+    for (Order *result in results) {
+        [self.managedObjectContext deleteObject:result];
+    }
+    [self.managedObjectContext save:nil];
+    */
     
-    // Create and configure a fetch request with the Donut entity.
+    // Create and configure a fetch request with the Person entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Person" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
@@ -88,26 +106,33 @@
     NSError *error;
     NSArray *matches = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
     if ([matches count] == 0) NSLog(@"No matches");
-    for (Person *match in matches) {
-        for (int i = 0; i < [match.qtyInOrder intValue]; i++) {
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"rank = %@", @(i)];
-            NSSet *filteredSet = [match.favorites filteredSetUsingPredicate:predicate];
-            Donut *thisDonut = (Donut *)[filteredSet anyObject];
+    for (Person *match in matches) {  // iterates through each person ordering.
+        int remainInOrder = [match.qtyInOrder intValue];
+        for (int i = 0; i < remainInOrder; i++) {  // iterates through each donut for order.
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"rank = %@", @(i)];  // sets up the predicate and ...
+            NSSet *filteredSet = [match.favorites filteredSetUsingPredicate:predicate];  // eliminates all donuts, leaving the one who's rank matches i.
+            Donut *thisDonut = (Donut *)[filteredSet anyObject];  // sets Donut *thisDonut to that donut.
             BOOL stored = NO;
-            for (Order *order in [self.fetchedResultsController fetchedObjects]) {
+            for (Order *order in [self.fetchedResultsController fetchedObjects]) {  // stores donut in previously made order.
                 if ([((Donut *)[order.donutItems anyObject]).flavor isEqualToString:thisDonut.flavor]) {
+                    order.qty = @([order.qty integerValue] + [thisDonut.qty integerValue]);
+                    remainInOrder -= [thisDonut.qty intValue] - 1;
                     [order addDonutItemsObject:thisDonut];
+                    NSLog(@"order: %@(%d), %@ : order.qty=%@.", match.name, i, thisDonut.flavor, order.qty.description);
                     stored = YES;
                     break;
                 }
             }
-            if (!stored) {
+            if (!stored) {  // creates new order for donut when a pre-existing one is not found.
                 Order *newOrder = (Order *)[NSEntityDescription
                                             insertNewObjectForEntityForName:@"Order"
                                             inManagedObjectContext:self.managedObjectContext];
                 NSUInteger nextRow = [[self.fetchedResultsController sections][0] numberOfObjects];
                 newOrder.rank = [NSNumber numberWithInteger:nextRow];
+                newOrder.qty = thisDonut.qty;
+                remainInOrder -= [thisDonut.qty intValue] - 1;
                 [newOrder addDonutItemsObject:thisDonut];
+                NSLog(@"newOrder: %@(%d), %@ : newOrder.qty=%@.", match.name, i, thisDonut.flavor, newOrder.qty.description);
             }
             [self.fetchedResultsController performFetch:&error];
         }
@@ -145,7 +170,7 @@
     // Configure the cell to show the donut's flavor
     Order *order = [self.fetchedResultsController objectAtIndexPath:indexPath];
     Donut *donut = [order.donutItems anyObject];
-    cell.qtyLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)order.donutItems.count];
+    cell.qtyLabel.text = order.qty.description;
     cell.donutLabel.text = donut.flavor;
 }
 

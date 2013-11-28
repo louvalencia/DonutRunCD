@@ -39,12 +39,6 @@
     header.delegate = self;
     self.tableView.tableHeaderView = header;
 
-    if ([self class] == [EditOrderTableViewController class]) {
-        self.navigationItem.LeftBarButtonItem = self.editButtonItem;
-    }
-    
-    self.tableView.allowsSelectionDuringEditing = YES;
-    
     NSError *error;
     [self.fetchedResultsController performFetch:&error];
     
@@ -55,10 +49,22 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self.tableView reloadData];
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)clearButtonTapped:(UIBarButtonItem *)sender
+{
+    [self resetDistribution];
 }
 
 #pragma mark - Table view data source
@@ -108,7 +114,11 @@
     Person *person = [self.fetchedResultsController objectAtIndexPath:indexPath];
     int qty = [person.qtyInOrder intValue];
     qty += sender.value;
-    person.qtyInOrder = [NSNumber numberWithInt:qty];
+    int total = 0;
+    for (Donut *donut in person.favorites) {
+        total += [donut.qty intValue];
+    }
+    person.qtyInOrder = (qty < total ? [NSNumber numberWithInt:qty] : [NSNumber numberWithInt:total]);
     sender.value = 0;
     NSError *error;
     [self.managedObjectContext save:&error];
@@ -305,13 +315,42 @@
     int personCount = [people count];
     EditOrderHeader *header = (EditOrderHeader *)self.tableView.tableHeaderView;
     int orderQty = [header.qtyTextField.text intValue];
+    int remainder = 0;
     for (Person *person in people) {
         int qty = orderQty / personCount + ([people indexOfObject:person] < orderQty % personCount ? 1 : 0);
-        person.qtyInOrder = [NSNumber numberWithInt:qty];
+        int total = 0;
+        for (Donut *donut in person.favorites) {
+            total += [donut.qty intValue];
+        }
+        person.qtyInOrder = (qty < total ? [NSNumber numberWithInt:qty] : [NSNumber numberWithInt:total]);
+        remainder += (qty - total > 0 ? qty - total : 0);
+    }
+    if (remainder) {
+        NSString *message = [NSString stringWithFormat:
+                             @"There are %d extra donuts not allocated.  "
+                             "Distribute them manually or add more people/favorites.",
+                             remainder];
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Not Enough Favorites"
+                                                     message:message
+                                                    delegate:nil
+                                           cancelButtonTitle:@"OK"
+                                           otherButtonTitles:nil];
+        [av show];
     }
     NSError *error;
     [self.managedObjectContext save:&error];
     [self.fetchedResultsController performFetch:&error];
+}
+
+- (void)resetDistribution
+{
+    NSArray *people = [self.fetchedResultsController fetchedObjects];
+    for (Person *person in people) {
+        person.inOrder = @(0);
+        person.qtyInOrder = @(0);
+    }
+    EditOrderHeader *header = (EditOrderHeader *)self.tableView.tableHeaderView;
+    header.qtyTextField.text = nil;
 }
 
 #pragma mark - Add view controller delegate
@@ -339,6 +378,7 @@
 {
     // Dismiss the modal view to return to the main list
     [self dismissViewControllerAnimated:YES completion:nil];
+    [self resetDistribution];
 }
 
 @end
