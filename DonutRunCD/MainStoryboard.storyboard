@@ -47,14 +47,20 @@
                         </connections>
                     </tableView>
                     <toolbarItems>
+                        <barButtonItem width="45" style="plain" systemItem="fixedSpace" id="swG-IU-4WE"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="wmb-Ql-zxp"/>
+                        <barButtonItem title="count" id="fKw-s7-DDt"/>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="IqZ-Du-ynh"/>
-                        <barButtonItem title="Build Order" id="R2a-pV-qAo">
+                        <barButtonItem title="Order" id="R2a-pV-qAo">
                             <connections>
                                 <segue destination="uyT-ph-v91" kind="modal" identifier="EditOrder" id="OXu-S3-hwS"/>
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" id="uZM-4f-3Lv"/>
+                    <connections>
+                        <outlet property="tallyCount" destination="fKw-s7-DDt" id="8wi-Op-E4l"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="v7J-ie-XGM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

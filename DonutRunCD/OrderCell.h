@@ -12,5 +12,7 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *qtyLabel;
 @property (weak, nonatomic) IBOutlet UILabel *donutLabel;
+@property (nonatomic) BOOL isSelected;
+@property (nonatomic) int swipeDirection;
 
 @end

@@ -15,6 +15,9 @@
 
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 
+@property (nonatomic) int finalTally;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *tallyCount;
+
 @end
 
 @implementation OrderTableViewController
@@ -96,6 +99,7 @@
     NSError *error;
     NSArray *matches = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
     if ([matches count] == 0) NSLog(@"No matches");
+    self.finalTally = 0;
     for (Person *match in matches) {  // iterates through each person ordering.
         int remainInOrder = [match.qtyInOrder intValue];
         for (int i = 0; i < remainInOrder; i++) {  // iterates through each donut for order.
@@ -106,6 +110,7 @@
             for (Order *order in [self.fetchedResultsController fetchedObjects]) {  // stores donut in previously made order.
                 if ([((Donut *)[order.donutItems anyObject]).flavor isEqualToString:thisDonut.flavor]) {
                     order.qty = @([order.qty integerValue] + [thisDonut.qty integerValue]);
+                    self.finalTally += [thisDonut.qty intValue];
                     remainInOrder -= [thisDonut.qty intValue] - 1;
                     [order addDonutItemsObject:thisDonut];
                     NSLog(@"order: %@(%d), %@ : order.qty=%@.", match.name, i, thisDonut.flavor, order.qty.description);
@@ -120,6 +125,7 @@
                 NSUInteger nextRow = [[self.fetchedResultsController sections][0] numberOfObjects];
                 newOrder.rank = [NSNumber numberWithInteger:nextRow];
                 newOrder.qty = thisDonut.qty;
+                self.finalTally += [thisDonut.qty intValue];
                 remainInOrder -= [thisDonut.qty intValue] - 1;
                 [newOrder addDonutItemsObject:thisDonut];
                 NSLog(@"newOrder: %@(%d), %@ : newOrder.qty=%@.", match.name, i, thisDonut.flavor, newOrder.qty.description);
@@ -127,6 +133,7 @@
             [self.fetchedResultsController performFetch:&error];
         }
     }
+    self.tallyCount.title = [NSString stringWithFormat:(self.finalTally == 1 ? @"%d donut" : @"%d donuts"), self.finalTally];
     [self.fetchedResultsController performFetch:&error];
     [self.tableView reloadData];
 }
@@ -149,9 +156,13 @@
     static NSString *CellIdentifier = @"OrderCell";
     OrderCell *cell = (OrderCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
-    UISwipeGestureRecognizer *swipeCell = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellSwiped:)];
-    [swipeCell setDirection:UISwipeGestureRecognizerDirectionRight];
-    [cell addGestureRecognizer:swipeCell];
+    UISwipeGestureRecognizer *swipeCellLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellSwiped:)];
+    [swipeCellLeft setDirection:UISwipeGestureRecognizerDirectionLeft];
+    [cell addGestureRecognizer:swipeCellLeft];
+    
+    UISwipeGestureRecognizer *swipeCellRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellSwiped:)];
+    [swipeCellRight setDirection:UISwipeGestureRecognizerDirectionRight];
+    [cell addGestureRecognizer:swipeCellRight];
     
     // Configure the cell...
     [self configureCell:cell atIndexPath:indexPath];
@@ -168,13 +179,15 @@
     cell.donutLabel.text = donut.flavor;
 }
 
-#define DURATION 0.2
+// #define DURATION 0.2
 
 - (void)cellSwiped:(UISwipeGestureRecognizer *)recognizer
 {
     NSLog(@"direction: %d, state: %d", recognizer.direction, recognizer.state);
     CGPoint p = [recognizer locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:p];
+    OrderCell *cell = (OrderCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+    cell.swipeDirection = recognizer.direction;
     /*
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     [cell.layer setAnchorPoint:CGPointMake(0, 0.5)];
@@ -186,7 +199,7 @@
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear]];
     [cell.layer addAnimation:animation forKey:@"reveal"];
     */
-    [self.managedObjectContext deleteObject:[[self.fetchedResultsController fetchedObjects] objectAtIndex:indexPath.row]];
+    // [self.managedObjectContext deleteObject:[[self.fetchedResultsController fetchedObjects] objectAtIndex:indexPath.row]];
     // [self.tableView reloadData];
     
     // [self.managedObjectContext insertObject:[[self.fetchedResultsController fetchedObjects] objectAtIndex:indexPath.row]];
@@ -215,12 +228,38 @@
     secondDonut.rank = @(2);
     secondDonut.flavor = @"Another Entry";
     [secondOrder addDonutItemsObject:secondDonut];
-    /*
+    
     NSError *error;
     [self.managedObjectContext save:&error];
-    [self.fetchedResultsController performFetch:&error];
-    */
+    // [self.fetchedResultsController performFetch:&error];
+    
+    [self updateTallyCount];
     // NSLog(@"newOrder: %@(%d), %@ : newOrder.qty=%@.", match.name, i, thisDonut.flavor, newOrder.qty.description);
+}
+
+- (void)swapOrderAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Here's where the magic happens.
+    // Things to consider:
+    // 1) Swapping for 1 or more.
+    // 2) If "swap in" items have already been selected.
+    // 3) Handling not enough favorites.
+    
+    // Pull needed information, then delete...
+    [self.managedObjectContext deleteObject:[[self.fetchedResultsController fetchedObjects] objectAtIndex:indexPath.row]];
+    
+    // Build/add the "swap-ins"...
+}
+
+- (void)updateTallyCount
+{
+    self.finalTally = 0;
+    for (Order *order in [self.fetchedResultsController fetchedObjects]) {
+        self.finalTally += [order.qty intValue];
+        Donut *donut = [order.donutItems anyObject];
+        NSLog(@"index: %@, flavor: %@, qty: %@, total so far: %d", order.rank.description, donut.flavor, order.qty, self.finalTally);
+    }
+    self.tallyCount.title = [NSString stringWithFormat:(self.finalTally == 1 ? @"%d donut" : @"%d donuts"), self.finalTally];
 }
 
 /*
@@ -319,12 +358,14 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     OrderCell *cell = (OrderCell *)[tableView cellForRowAtIndexPath:indexPath];
-    if (cell.qtyLabel.textColor == [UIColor blackColor]) {
+    if (!cell.isSelected) {
         cell.qtyLabel.textColor = [UIColor grayColor];
         cell.donutLabel.textColor = [UIColor grayColor];
+        cell.isSelected = YES;
     } else {
         cell.qtyLabel.textColor = [UIColor blackColor];
         cell.donutLabel.textColor = [UIColor blackColor];
+        cell.isSelected = NO;
     }
 }
 
@@ -377,9 +418,12 @@
             [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationTop];
             break;
             
-        case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationRight];
+        case NSFetchedResultsChangeDelete: {
+            OrderCell *cell = (OrderCell *)[tableView cellForRowAtIndexPath:indexPath];
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:
+             (cell.swipeDirection == UISwipeGestureRecognizerDirectionRight ? UITableViewRowAnimationRight : UITableViewRowAnimationLeft)];
             break;
+        }
             
         case NSFetchedResultsChangeUpdate:
             [self configureCell:(OrderCell *)[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
