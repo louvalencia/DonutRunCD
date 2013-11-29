@@ -78,16 +78,6 @@
 {
     // Clear out all Order data and start fresh.
     [self clearOrder];
-    /*
-    NSFetchRequest *req = [[NSFetchRequest alloc] init];
-    NSEntityDescription *ent = [NSEntityDescription entityForName:@"Order" inManagedObjectContext:self.managedObjectContext];
-    [req setEntity:ent];
-    NSArray *results = [self.managedObjectContext executeFetchRequest:req error:nil];
-    for (Order *result in results) {
-        [self.managedObjectContext deleteObject:result];
-    }
-    [self.managedObjectContext save:nil];
-    */
     
     // Create and configure a fetch request with the Person entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -159,6 +149,10 @@
     static NSString *CellIdentifier = @"OrderCell";
     OrderCell *cell = (OrderCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
+    UISwipeGestureRecognizer *swipeCell = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellSwiped:)];
+    [swipeCell setDirection:UISwipeGestureRecognizerDirectionRight];
+    [cell addGestureRecognizer:swipeCell];
+    
     // Configure the cell...
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
@@ -174,6 +168,62 @@
     cell.donutLabel.text = donut.flavor;
 }
 
+#define DURATION 0.2
+
+- (void)cellSwiped:(UISwipeGestureRecognizer *)recognizer
+{
+    NSLog(@"direction: %d, state: %d", recognizer.direction, recognizer.state);
+    CGPoint p = [recognizer locationInView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:p];
+    /*
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    [cell.layer setAnchorPoint:CGPointMake(0, 0.5)];
+    [cell.layer setPosition:CGPointMake(cell.frame.size.width, cell.layer.position.y)];
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"position.x"];
+    [animation setRemovedOnCompletion:NO];
+    [animation setDelegate:self];
+    [animation setDuration:DURATION];
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear]];
+    [cell.layer addAnimation:animation forKey:@"reveal"];
+    */
+    [self.managedObjectContext deleteObject:[[self.fetchedResultsController fetchedObjects] objectAtIndex:indexPath.row]];
+    // [self.tableView reloadData];
+    
+    // [self.managedObjectContext insertObject:[[self.fetchedResultsController fetchedObjects] objectAtIndex:indexPath.row]];
+    // [self.tableView reloadData];
+    
+    Order *newOrder = (Order *)[NSEntityDescription
+                                insertNewObjectForEntityForName:@"Order"
+                                inManagedObjectContext:self.managedObjectContext];
+    newOrder.rank = [NSNumber numberWithInteger:indexPath.row];
+    newOrder.qty = @(-1);
+    Donut *newDonut = (Donut *)[NSEntityDescription
+                                insertNewObjectForEntityForName:@"Donut"
+                                inManagedObjectContext:self.managedObjectContext];
+    newDonut.rank = @(1);
+    newDonut.flavor = @"Fake Entry";
+    [newOrder addDonutItemsObject:newDonut];
+    
+    Order *secondOrder = (Order *)[NSEntityDescription
+                                insertNewObjectForEntityForName:@"Order"
+                                inManagedObjectContext:self.managedObjectContext];
+    secondOrder.rank = [NSNumber numberWithInteger:indexPath.row + 1];
+    secondOrder.qty = @(-2);
+    Donut *secondDonut = (Donut *)[NSEntityDescription
+                                insertNewObjectForEntityForName:@"Donut"
+                                inManagedObjectContext:self.managedObjectContext];
+    secondDonut.rank = @(2);
+    secondDonut.flavor = @"Another Entry";
+    [secondOrder addDonutItemsObject:secondDonut];
+    /*
+    NSError *error;
+    [self.managedObjectContext save:&error];
+    [self.fetchedResultsController performFetch:&error];
+    */
+    // NSLog(@"newOrder: %@(%d), %@ : newOrder.qty=%@.", match.name, i, thisDonut.flavor, newOrder.qty.description);
+}
+
+/*
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
 {
     int maxPathRow = sourceIndexPath.row > destinationIndexPath.row ? sourceIndexPath.row : destinationIndexPath.row;
@@ -193,30 +243,33 @@
     NSError *error;
     [self.fetchedResultsController performFetch:&error];
 }
+*/
 
 #pragma mark - Table view editing
-
+/*
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated {
     
-    [super setEditing:editing animated:animated];
+    // [super setEditing:editing animated:animated];
     
     // Hide the back button when editing starts, and show it again when editing finishes.
     [self.navigationItem setHidesBackButton:editing animated:animated];
     
+    self.tableView.editing = NO;
+    
     if (!editing) {
         // Save the changes.
         NSError *error;
-        if (![self.managedObjectContext save:&error]) {
+        if (![self.managedObjectContext save:&error]) { */
             /*
              Replace this implementation with code to handle the error appropriately.
              
              abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-             */
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            */
+            /* NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
     }
-}
+} */
 
 /*
 // Override to support conditional editing of the table view.
@@ -226,7 +279,7 @@
     return YES;
 }
 */
-
+/*
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
@@ -243,24 +296,37 @@
         [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
         
         NSError *error;
-        if (![context save:&error]) {
-            /*
+        if (![context save:&error]) { */
+             /*
              Replace this implementation with code to handle the error appropriately.
              
              abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-             */
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            */
+            /* NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
     }
 }
-
+*/
 /*
 // Override to support rearranging the table view.
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
 }
 */
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    OrderCell *cell = (OrderCell *)[tableView cellForRowAtIndexPath:indexPath];
+    if (cell.qtyLabel.textColor == [UIColor blackColor]) {
+        cell.qtyLabel.textColor = [UIColor grayColor];
+        cell.donutLabel.textColor = [UIColor grayColor];
+    } else {
+        cell.qtyLabel.textColor = [UIColor blackColor];
+        cell.donutLabel.textColor = [UIColor blackColor];
+    }
+}
 
 #pragma mark - Fetched results controller
 
@@ -308,11 +374,11 @@
     switch(type) {
             
         case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationTop];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationRight];
             break;
             
         case NSFetchedResultsChangeUpdate:
